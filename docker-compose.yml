@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ttsfr_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ttsfr_db}
+      POSTGRES_USER: ${POSTGRES_USER:-ttsfr_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ttsfr_secure_password_2026}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ttsfr_user} -d ${POSTGRES_DB:-ttsfr_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ttsfr_backend
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-ttsfr_user}:${POSTGRES_PASSWORD:-ttsfr_secure_password_2026}@db:5432/${POSTGRES_DB:-ttsfr_db}
+      - SECRET_KEY=${SECRET_KEY:-ttsfr_secret_key_change_me_in_prod}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ttsfr_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  pgdata:
