@@ -13,3 +13,29 @@ body {
   background: #F8FAFC;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+
+@keyframes slide-ltr {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-slide-ltr {
+  animation: slide-ltr 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-slide-ltr:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-ltr {
+    animation: none;
+    transform: none;
+  }
+}
+

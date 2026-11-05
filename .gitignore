@@ -1,1 +1,102 @@
-.env.example
+# ==============================================================================
+# TTSFR Platform - .gitignore
+# Strict exclusion of sensitive data, environment files, credentials & build artifacts
+# ==============================================================================
+
+# Environment files & Secrets (CRITICAL)
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+*.env.*
+!.env.example
+
+# Sensitive credentials, certificates & private keys
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+*.pub
+id_rsa*
+*.secret
+secrets/
+credentials/
+auth/certs/
+
+# Database dumps, persistence & volumes
+pgdata/
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.sql
+*.backup
+
+# Logs & Runtime telemetry
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python & FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js & Next.js
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+out/
+frontend/out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# OS-generated files & IDEs
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

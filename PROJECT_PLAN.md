@@ -22,9 +22,9 @@ gantt
     section Week 1: Foundations
     Scaffolding & ODCO Database Seeding        :done, w1, 2026-09-28, 7d
     section Week 2: Auth & Profiles
-    Auth, RBAC & Cooperative Profiles          :active, w2, after w1, 7d
+    Auth, RBAC & Cooperative Profiles          :done, w2, after w1, 7d
     section Week 3: Diagnostic Engine
-    5-Step Wizard & Auto-Save                  :w3, after w2, 7d
+    5-Step Wizard & Auto-Save                  :active, w3, after w2, 7d
     section Week 4: Scoring & Clusters
     Math Engine, 6 Clusters & Module Matching  :w4, after w3, 7d
     section Week 5: Reports & Actions
@@ -37,7 +37,7 @@ gantt
 
 ## 2. Week-by-Week Execution Breakdown
 
-### 📅 Week 1: Core Scaffolding, Database & Public Showcase
+### Week 1: Core Scaffolding, Database & Public Showcase
 * **Focus:** Environment, Data Architecture & UI Brand System.
 * **Key Tasks:**
   * Initialize Monorepo: `frontend/` (Next.js 14 App Router, Tailwind, TypeScript) + `backend/` (FastAPI) + `docker-compose.yml` (PostgreSQL 16).
@@ -50,7 +50,7 @@ gantt
 
 ---
 
-### 📅 Week 2: Authentication, Security & Cooperative Spaces
+### Week 2: Authentication, Security & Cooperative Spaces
 * **Focus:** Multi-Tenancy, Profiles & Access Control.
 * **Key Tasks:**
   * JWT Authentication on FastAPI (`/api/v1/auth/login`, `/me`, password reset).
@@ -63,7 +63,7 @@ gantt
 
 ---
 
-### 📅 Week 3: The 5-Step Diagnostic Engine & Auto-Save
+### Week 3: The 5-Step Diagnostic Engine & Auto-Save
 * **Focus:** The Core Questionnaire Workflow.
 * **Key Tasks:**
   * Step Wizard Component (`Étape 1/5` to `Étape 5/5`) with progress indicators.
@@ -78,7 +78,7 @@ gantt
 
 ---
 
-### 📅 Week 4: Scoring Engine, The 6 Clusters & Module Recommendation
+### Week 4: Scoring Engine, The 6 Clusters & Module Recommendation
 * **Focus:** Automation of Business Logic & Taxonomy.
 * **Key Tasks:**
   * Python Scoring Engine:
@@ -92,7 +92,7 @@ gantt
 
 ---
 
-### 📅 Week 5: Action Plan Tracker, PDF Audit Report & Excel Export
+### Week 5: Action Plan Tracker, PDF Audit Report & Excel Export
 * **Focus:** Outputs, Analytics & Deliverables.
 * **Key Tasks:**
   * Cooperative Action Plan Tracker:
@@ -109,7 +109,7 @@ gantt
 
 ---
 
-### 📅 Week 6: UAT, Pilot Cooperative Trials & Production Deployment
+### Week 6: UAT, Pilot Cooperative Trials & Production Deployment
 * **Focus:** Quality Assurance, Real Pilot Data & Launch.
 * **Key Tasks:**
   * Load real data and profiles for the **2 pilot cooperatives**.

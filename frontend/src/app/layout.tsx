@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
   title: "Plateforme TTSFR | Accompagnement des Coopératives",
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="antialiased min-h-screen flex flex-col bg-slate-50 text-slate-900">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

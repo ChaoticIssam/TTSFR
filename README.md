@@ -6,7 +6,7 @@
 
 ---
 
-## 🌟 Présentation du Projet
+## Presentation du Projet
 
 La plateforme web **TTSFR** est un système full-stack conçu pour digitaliser le parcours de diagnostic, d'évaluation et d'accompagnement des coopératives marocaines :
 * **Diagnostic en 5 étapes :** Secteurs (ODCO), Performance opérationnelle, Performance économique, Maturité organisationnelle, et Maturité technologique & énergétique.
@@ -16,7 +16,7 @@ La plateforme web **TTSFR** est un système full-stack conçu pour digitaliser l
 
 ---
 
-## 🛠️ Stack Technique
+## Stack Technique
 
 * **Frontend :** Next.js 14+ (App Router, TypeScript, Tailwind CSS, Lucide Icons, Shadcn/UI-style components) – *Design 'Mobile-First' & Responsive*.
 * **Backend :** FastAPI (Python 3.11+), Pydantic v2, SQLAlchemy 2.0.
@@ -26,26 +26,34 @@ La plateforme web **TTSFR** est un système full-stack conçu pour digitaliser l
 
 ---
 
-## 🚀 Démarrage Rapide
+## Demarrage Rapide
 
-### 1. Variables d'environnement
-Copiez le fichier d'exemple et configurez vos clés :
+Le projet intègre un [Makefile](file:///Users/deimos/Desktop/all/MyProjects/ttsfr-platform/Makefile) pour automatiser l'intégralité du cycle de vie des conteneurs :
+
+### 1. Initialisation en 1 commande (Recommandé)
+Crée automatiquement le fichier `.env`, compile les conteneurs, démarre les services et injecte les données de référence (ODCO, Clusters, Comptes pilotes) :
 ```bash
-cp .env.example .env
+make init
 ```
 
-### 2. Lancement avec Docker Compose
-```bash
-docker compose up --build
-```
-* **Frontend :** http://localhost:3000
-* **API FastAPI :** http://localhost:8000
+### 2. Commandes usuelles du Makefile
+* `make up` : Démarre tous les services en arrière-plan.
+* `make down` : Arrête les conteneurs.
+* `make restart` : Redémarre les conteneurs.
+* `make logs` : Affiche les logs en direct (`make logs-backend`, `make logs-frontend`, `make logs-db`).
+* `make seed` : Réexécute le script d'initialisation des secteurs et comptes pilotes.
+* `make ps` : Affiche l'état des conteneurs.
+* `make help` : Affiche l'aide interactive avec la liste complète des commandes.
+
+### 3. URLs d'accès local
+* **Frontend (Next.js) :** http://localhost:3000
+* **API Backend (FastAPI) :** http://localhost:8000
 * **Documentation OpenAPI (Swagger) :** http://localhost:8000/docs
-* **PostgreSQL :** localhost:5432
+* **PostgreSQL 16 :** localhost:5432
 
 ---
 
-## 📂 Structure du Répertoire
+## Structure du Repertoire
 
 ```
 ttsfr-platform/
