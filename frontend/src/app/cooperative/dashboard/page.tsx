@@ -302,6 +302,7 @@ function CooperativeDashboardContent() {
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <Link
                     href="/cooperative/diagnostic"
+                    prefetch={false}
                     className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white font-semibold text-xs sm:text-sm transition whitespace-nowrap shadow-sm"
                   >
                     <span>
@@ -451,6 +452,7 @@ function CooperativeDashboardContent() {
                     </div>
                     <Link
                       href="/cooperative/diagnostic"
+                      prefetch={false}
                       className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white font-bold text-xs sm:text-sm transition whitespace-nowrap shadow-sm"
                     >
                       <span>

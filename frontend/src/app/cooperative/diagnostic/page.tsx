@@ -359,6 +359,7 @@ export default function DiagnosticWizard() {
         });
         setSubmissionResult(result);
         setIsSubmitted(true);
+        router.refresh();
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
         alert(
@@ -1094,7 +1095,8 @@ export default function DiagnosticWizard() {
               <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-slate-200">
                 <Link
                   href="/cooperative/dashboard?section=accompagnement"
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white text-sm font-bold transition text-center"
+                  prefetch={false}
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white text-sm font-bold transition text-center shadow-sm"
                 >
                   Accéder à mon parcours d'accompagnement
                 </Link>

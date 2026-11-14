@@ -94,7 +94,12 @@ export function CooperativeShell({
       onSelectSection(item.id);
       window.history.replaceState(null, "", item.href);
       window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     }
+
+    // When navigating between different pages (e.g. diagnostic <-> dashboard),
+    // refresh Next.js router cache to prevent showing stale states
+    router.refresh();
   };
 
   return (
@@ -171,10 +176,11 @@ export function CooperativeShell({
                   <Link
                     key={item.id}
                     href={item.href}
+                    prefetch={false}
                     onClick={(e) => handleNavClick(e, item)}
                     className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl transition flex-shrink-0 lg:flex-shrink ${
                       isActive
-                        ? "bg-[#0F4C3A] text-white shadow-2xs"
+                        ? "bg-[#0F4C3A] text-white shadow-sm"
                         : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
                     }`}
                   >
@@ -203,7 +209,7 @@ export function CooperativeShell({
         </aside>
 
         {/* Zone de contenu de la section active */}
-        <main className="flex-1 min-w-0 p-5 sm:p-8 lg:p-10">
+        <main className="flex-1 min-w-0 p-5 sm:p-8 lg:p-10 animate-fade-in">
           <div className="max-w-5xl mx-auto w-full">{children}</div>
         </main>
       </div>
