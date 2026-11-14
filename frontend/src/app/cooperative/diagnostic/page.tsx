@@ -141,6 +141,44 @@ const TECH_ENERGY_QUESTIONS = [
   { id: "t5", label: "Des actions d’économie d’énergie, d’eau ou de matières sont-elles mises en œuvre et évaluées ?", hint: "Panneaux solaires, recyclage des sous-produits, récupération d'eau, éclairage LED." },
 ];
 
+function DiagnosticSkeleton() {
+  return (
+    <div className="w-full space-y-6 animate-pulse">
+      {/* Stepper Skeleton */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="grid grid-cols-5 gap-2">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="h-10 bg-slate-100 rounded-xl" />
+          ))}
+        </div>
+      </div>
+
+      {/* Main Card Skeleton */}
+      <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+        <div className="space-y-2">
+          <div className="h-4 w-40 bg-slate-200 rounded" />
+          <div className="h-7 w-72 bg-slate-200 rounded-lg" />
+          <div className="h-3.5 w-96 bg-slate-100 rounded" />
+        </div>
+
+        <div className="space-y-4 pt-4 border-t border-slate-100">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="p-5 rounded-2xl border border-slate-100 bg-slate-50/50 space-y-3">
+              <div className="h-4 w-60 bg-slate-200 rounded" />
+              <div className="h-3 w-80 bg-slate-100 rounded" />
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2">
+                {[1, 2, 3, 4, 5].map((j) => (
+                  <div key={j} className="h-12 bg-white rounded-xl border border-slate-200/80" />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function DiagnosticWizard() {
   const router = useRouter();
   const { user, token, isLoading: authLoading } = useAuth();
@@ -159,6 +197,7 @@ export default function DiagnosticWizard() {
   const [answers, setAnswers] = useState<Record<string, any>>({});
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<DiagnosticSubmission | null>(null);
@@ -294,6 +333,8 @@ export default function DiagnosticWizard() {
         }
       } catch {
         // First diagnostic attempt
+      } finally {
+        setIsInitialLoading(false);
       }
     };
 
@@ -450,15 +491,8 @@ export default function DiagnosticWizard() {
     clusterCompatList.find((c) => c.score === maxCompatScore);
   const assignedCluster = clusters.find((c) => c.id === submissionResult?.cluster_id);
 
-  if (authLoading || (!token && typeof window !== "undefined")) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-[#0F4C3A] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-xs text-slate-500 font-medium">Chargement du diagnostic...</p>
-        </div>
-      </div>
-    );
+  if (authLoading || (!token && typeof window !== "undefined") || isInitialLoading) {
+    return <DiagnosticSkeleton />;
   }
 
   return (
