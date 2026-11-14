@@ -145,7 +145,7 @@ export function CooperativeShell({
       {/* Corps principal : Sidebar gauche + Zone de contenu */}
       <div className="flex-1 flex flex-col lg:flex-row w-full">
         {/* Sidebar de navigation gauche */}
-        <aside className="w-full lg:w-68 xl:w-72 lg:flex-shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between">
+        <aside className="w-full lg:w-64 xl:w-72 lg:flex-shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between">
           <div className="p-4 sm:p-5">
             {/* Carte miniature de la coopérative */}
             <div className="hidden lg:flex items-center space-x-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 mb-5">
@@ -219,7 +219,7 @@ export function CooperativeShell({
       {/* Modale de confirmation de déconnexion */}
       {showLogoutConfirm && (
         <div
-          className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setShowLogoutConfirm(false)}
         >
           <div

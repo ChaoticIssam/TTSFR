@@ -37,7 +37,8 @@ def _sync_cooperative_sector_from_answers(db: Session, cooperative_id: UUID, ans
             if not coop.sector_id:
                 coop.sector_id = sub.sector_id
 
-@router.get("/", response_model=List[DiagnosticResponse])
+@router.get("", response_model=List[DiagnosticResponse])
+@router.get("/", response_model=List[DiagnosticResponse], include_in_schema=False)
 def list_all_diagnostics(
     current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.COORDINATOR, UserRole.EXPERT)),
     db: Session = Depends(get_db)

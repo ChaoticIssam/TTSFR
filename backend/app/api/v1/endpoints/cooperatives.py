@@ -99,7 +99,8 @@ def update_my_cooperative_profile(
         .first()
     )
 
-@router.get("/", response_model=List[CooperativeResponse])
+@router.get("", response_model=List[CooperativeResponse])
+@router.get("/", response_model=List[CooperativeResponse], include_in_schema=False)
 def list_cooperatives(
     current_user: User = Depends(require_roles(UserRole.ADMIN, UserRole.COORDINATOR, UserRole.EXPERT)),
     db: Session = Depends(get_db)
