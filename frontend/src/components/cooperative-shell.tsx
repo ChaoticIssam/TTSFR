@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   LayoutDashboard,
   ClipboardCheck,
@@ -16,8 +16,8 @@ import { Cooperative } from "@/lib/types";
 
 export type CoopSection = "overview" | "diagnostic" | "accompagnement" | "profil";
 
-interface CooperativeShellProps {
-  activeSection: CoopSection;
+export interface CooperativeShellProps {
+  activeSection?: CoopSection;
   onSelectSection?: (section: CoopSection) => void;
   coopProfile?: Cooperative | null;
   headerRight?: React.ReactNode;
@@ -70,10 +70,32 @@ export function CooperativeShell({
 }: CooperativeShellProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { user, logout } = useAuth();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const displayName = coopProfile?.name || user?.full_name || "Espace Coopérative";
+  // Derive activeSection from URL if not explicitly supplied
+  let currentSection: CoopSection = activeSection || "overview";
+  if (!activeSection) {
+    if (pathname.includes("/diagnostic")) {
+      currentSection = "diagnostic";
+    } else {
+      const sec = searchParams?.get("section");
+      if (sec === "accompagnement" || sec === "profil") {
+        currentSection = sec;
+      } else {
+        currentSection = "overview";
+      }
+    }
+  }
+
+  // Display name with instant fallback priority: coopProfile -> user.cooperative -> user.full_name
+  const displayName =
+    coopProfile?.name ||
+    user?.cooperative?.name ||
+    user?.full_name ||
+    "Espace Coopérative";
+
   const initials = displayName
     .replace(/^Coopérative\s+/i, "")
     .slice(0, 2)
@@ -83,8 +105,6 @@ export function CooperativeShell({
     e: React.MouseEvent<HTMLAnchorElement>,
     item: (typeof NAV_ITEMS)[number]
   ) => {
-    // If we are already on /cooperative/dashboard and clicking one of the dashboard sections,
-    // switch smoothly via state + URL query update.
     if (
       pathname === "/cooperative/dashboard" &&
       item.id !== "diagnostic" &&
@@ -93,19 +113,14 @@ export function CooperativeShell({
       e.preventDefault();
       onSelectSection(item.id);
       window.history.replaceState(null, "", item.href);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
     }
-
-    // When navigating between different pages (e.g. diagnostic <-> dashboard),
-    // refresh Next.js router cache to prevent showing stale states
-    router.refresh();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Barre supérieure pleine largeur */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
+      {/* Barre supérieure pleine largeur (persistante) */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
         <div className="w-full px-5 sm:px-8 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center space-x-3 min-w-0">
             <Link href="/" className="flex items-center flex-shrink-0">
@@ -147,9 +162,9 @@ export function CooperativeShell({
         </div>
       </header>
 
-      {/* Corps principal : Sidebar gauche + Zone de contenu */}
+      {/* Corps principal : Sidebar gauche persistante + Zone de contenu */}
       <div className="flex-1 flex flex-col lg:flex-row w-full">
-        {/* Sidebar de navigation gauche */}
+        {/* Sidebar de navigation gauche (persistante) */}
         <aside className="w-full lg:w-64 xl:w-72 lg:flex-shrink-0 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between">
           <div className="p-4 sm:p-5">
             {/* Carte miniature de la coopérative */}
@@ -162,7 +177,7 @@ export function CooperativeShell({
                   {displayName}
                 </p>
                 <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                  {coopProfile?.sector?.name || "Coopérative partenaire"}
+                  {coopProfile?.sector?.name || user?.cooperative?.region || "Coopérative partenaire"}
                 </p>
               </div>
             </div>
@@ -171,12 +186,11 @@ export function CooperativeShell({
             <nav className="flex lg:flex-col gap-1.5 overflow-x-auto pb-1 lg:pb-0">
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
-                const isActive = activeSection === item.id;
+                const isActive = currentSection === item.id;
                 return (
                   <Link
                     key={item.id}
                     href={item.href}
-                    prefetch={false}
                     onClick={(e) => handleNavClick(e, item)}
                     className={`flex items-center space-x-3 px-3.5 py-3 rounded-xl transition flex-shrink-0 lg:flex-shrink ${
                       isActive
@@ -208,13 +222,13 @@ export function CooperativeShell({
           </div>
         </aside>
 
-        {/* Zone de contenu de la section active */}
+        {/* Zone de contenu de la section active avec animation fluide */}
         <main className="flex-1 min-w-0 p-5 sm:p-8 lg:p-10 animate-fade-in">
           <div className="max-w-5xl mx-auto w-full">{children}</div>
         </main>
       </div>
 
-      {/* Footer simple sans répétition du logo */}
+      {/* Footer simple persistant */}
       <footer className="bg-white border-t border-slate-200 py-4 mt-auto">
         <div className="w-full px-5 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-slate-400">
           <p>Plateforme TTSFR — Espace d&apos;Accompagnement des Coopératives</p>
@@ -264,4 +278,3 @@ export function CooperativeShell({
     </div>
   );
 }
-

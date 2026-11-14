@@ -29,7 +29,7 @@ import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
 import { Cluster, Cooperative, DiagnosticSubmission } from "@/lib/types";
 import { ODCO_SECTORS, OdcoSector, OdcoSubSector } from "@/lib/odco-data";
-import { CooperativeShell } from "@/components/cooperative-shell";
+import { useCooperative } from "../layout";
 
 // ==============================================================================
 // 1. Profiling Questions (P1 to P5) - Determining Cluster Compatibility (35/15/20/15/15)
@@ -144,6 +144,7 @@ const TECH_ENERGY_QUESTIONS = [
 export default function DiagnosticWizard() {
   const router = useRouter();
   const { user, token, isLoading: authLoading } = useAuth();
+  const { cooperative: coopProfile, setHeaderRight } = useCooperative();
 
   const [step, setStep] = useState(1);
   const [subStep, setSubStep] = useState(1); // 1 = Secteur, 2 = Profil cluster (P1..P5)
@@ -161,9 +162,22 @@ export default function DiagnosticWizard() {
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<DiagnosticSubmission | null>(null);
-  const [coopProfile, setCoopProfile] = useState<Cooperative | null>(null);
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isAutoSaving) {
+      setHeaderRight(
+        <span className="hidden sm:flex items-center text-xs text-slate-500 font-medium">
+          <Save className="h-3.5 w-3.5 mr-1.5 text-[#0F4C3A]" />
+          Sauvegarde...
+        </span>
+      );
+    } else {
+      setHeaderRight(null);
+    }
+    return () => setHeaderRight(null);
+  }, [isAutoSaving, setHeaderRight]);
 
   const stepLabels = [
     { num: 1, title: "Secteur & Profil", icon: Layers },
@@ -448,18 +462,7 @@ export default function DiagnosticWizard() {
   }
 
   return (
-    <CooperativeShell
-      activeSection="diagnostic"
-      coopProfile={coopProfile}
-      headerRight={
-        isAutoSaving ? (
-          <span className="hidden sm:flex items-center text-xs text-slate-500 font-medium">
-            <Save className="h-3.5 w-3.5 mr-1.5 text-[#0F4C3A]" />
-            Sauvegarde...
-          </span>
-        ) : undefined
-      }
-    >
+    <div className="w-full">
       {/* Horizontal Desktop Stepper */}
         {!isSubmitted && (
           <div className="mb-8 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -1112,6 +1115,6 @@ export default function DiagnosticWizard() {
             </div>
           )}
         </div>
-    </CooperativeShell>
+    </div>
   );
 }
