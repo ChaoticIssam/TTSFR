@@ -1,0 +1,1421 @@
+// Nomenclature Officielle ODCO : 24 Secteurs & 237 Sous-Secteurs
+// Source: Référentiel National ODCO - Contenu_secteurs & sous secteurs.xlsx
+
+export interface OdcoSubSector {
+  code: string;
+  name: string;
+  order_index: number;
+}
+
+export interface OdcoSector {
+  id: number;
+  code: string;
+  name: string;
+  desc: string;
+  order_index: number;
+  sub_sectors: OdcoSubSector[];
+}
+
+export const ODCO_SECTORS: OdcoSector[] = [
+  {
+    "id": 1,
+    "code": "AGR",
+    "name": "Agriculture",
+    "order_index": 1,
+    "sub_sectors": [
+      {
+        "code": "AGR_01",
+        "name": "Céréales et légumineuses",
+        "order_index": 1
+      },
+      {
+        "code": "AGR_02",
+        "name": "Maraîchage",
+        "order_index": 2
+      },
+      {
+        "code": "AGR_03",
+        "name": "Arboriculture fruitière",
+        "order_index": 3
+      },
+      {
+        "code": "AGR_04",
+        "name": "Oléiculture",
+        "order_index": 4
+      },
+      {
+        "code": "AGR_05",
+        "name": "Agrumes",
+        "order_index": 5
+      },
+      {
+        "code": "AGR_06",
+        "name": "Viticulture",
+        "order_index": 6
+      },
+      {
+        "code": "AGR_07",
+        "name": "Élevage bovin",
+        "order_index": 7
+      },
+      {
+        "code": "AGR_08",
+        "name": "Élevage ovin et caprin",
+        "order_index": 8
+      },
+      {
+        "code": "AGR_09",
+        "name": "Aviculture",
+        "order_index": 9
+      },
+      {
+        "code": "AGR_10",
+        "name": "Apiculture",
+        "order_index": 10
+      },
+      {
+        "code": "AGR_11",
+        "name": "Production laitière",
+        "order_index": 11
+      },
+      {
+        "code": "AGR_12",
+        "name": "Semences et plants",
+        "order_index": 12
+      },
+      {
+        "code": "AGR_13",
+        "name": "Irrigation et services agricoles",
+        "order_index": 13
+      },
+      {
+        "code": "AGR_14",
+        "name": "Autre – à préciser",
+        "order_index": 14
+      }
+    ],
+    "desc": "Céréales, maraîchage, arboriculture, oléiculture et élevage"
+  },
+  {
+    "id": 2,
+    "code": "ART",
+    "name": "Artisanat",
+    "order_index": 2,
+    "sub_sectors": [
+      {
+        "code": "ART_01",
+        "name": "Tissage et textile",
+        "order_index": 1
+      },
+      {
+        "code": "ART_02",
+        "name": "Tapis",
+        "order_index": 2
+      },
+      {
+        "code": "ART_03",
+        "name": "Broderie et couture",
+        "order_index": 3
+      },
+      {
+        "code": "ART_04",
+        "name": "Cuir et maroquinerie",
+        "order_index": 4
+      },
+      {
+        "code": "ART_05",
+        "name": "Poterie et céramique",
+        "order_index": 5
+      },
+      {
+        "code": "ART_06",
+        "name": "Bois et menuiserie",
+        "order_index": 6
+      },
+      {
+        "code": "ART_07",
+        "name": "Vannerie",
+        "order_index": 7
+      },
+      {
+        "code": "ART_08",
+        "name": "Ferronnerie",
+        "order_index": 8
+      },
+      {
+        "code": "ART_09",
+        "name": "Bijouterie",
+        "order_index": 9
+      },
+      {
+        "code": "ART_10",
+        "name": "Zellige et mosaïque",
+        "order_index": 10
+      },
+      {
+        "code": "ART_11",
+        "name": "Décoration",
+        "order_index": 11
+      },
+      {
+        "code": "ART_12",
+        "name": "Produits artisanaux divers",
+        "order_index": 12
+      },
+      {
+        "code": "ART_13",
+        "name": "Autre – à préciser",
+        "order_index": 13
+      }
+    ],
+    "desc": "Tissage, tapis, maroquinerie, poterie, boiserie et zellige"
+  },
+  {
+    "id": 3,
+    "code": "CDT",
+    "name": "Commerçants détaillants",
+    "order_index": 3,
+    "sub_sectors": [
+      {
+        "code": "CDT_01",
+        "name": "Alimentation générale",
+        "order_index": 1
+      },
+      {
+        "code": "CDT_02",
+        "name": "Fruits et légumes",
+        "order_index": 2
+      },
+      {
+        "code": "CDT_03",
+        "name": "Habillement",
+        "order_index": 3
+      },
+      {
+        "code": "CDT_04",
+        "name": "Produits artisanaux",
+        "order_index": 4
+      },
+      {
+        "code": "CDT_05",
+        "name": "Produits agricoles",
+        "order_index": 5
+      },
+      {
+        "code": "CDT_06",
+        "name": "Équipements et fournitures",
+        "order_index": 6
+      },
+      {
+        "code": "CDT_07",
+        "name": "Commerce de proximité",
+        "order_index": 7
+      },
+      {
+        "code": "CDT_08",
+        "name": "Marchés et points de vente collectifs",
+        "order_index": 8
+      },
+      {
+        "code": "CDT_09",
+        "name": "Autre – à préciser",
+        "order_index": 9
+      }
+    ],
+    "desc": "Alimentation générale, fruits et légumes, habillement et terroirs"
+  },
+  {
+    "id": 4,
+    "code": "PAM",
+    "name": "Plantes aromatiques et médicinales",
+    "order_index": 4,
+    "sub_sectors": [
+      {
+        "code": "PAM_01",
+        "name": "Culture des plantes",
+        "order_index": 1
+      },
+      {
+        "code": "PAM_02",
+        "name": "Collecte",
+        "order_index": 2
+      },
+      {
+        "code": "PAM_03",
+        "name": "Séchage",
+        "order_index": 3
+      },
+      {
+        "code": "PAM_04",
+        "name": "Distillation",
+        "order_index": 4
+      },
+      {
+        "code": "PAM_05",
+        "name": "Huiles essentielles",
+        "order_index": 5
+      },
+      {
+        "code": "PAM_06",
+        "name": "Hydrolats",
+        "order_index": 6
+      },
+      {
+        "code": "PAM_07",
+        "name": "Herboristerie",
+        "order_index": 7
+      },
+      {
+        "code": "PAM_08",
+        "name": "Tisanes",
+        "order_index": 8
+      },
+      {
+        "code": "PAM_09",
+        "name": "Extraits naturels",
+        "order_index": 9
+      },
+      {
+        "code": "PAM_10",
+        "name": "Conditionnement et commercialisation",
+        "order_index": 10
+      },
+      {
+        "code": "PAM_11",
+        "name": "Autre – à préciser",
+        "order_index": 11
+      }
+    ],
+    "desc": "Culture, distillation, huiles essentielles et herboristerie"
+  },
+  {
+    "id": 5,
+    "code": "HAB",
+    "name": "Habitat",
+    "order_index": 5,
+    "sub_sectors": [
+      {
+        "code": "HAB_01",
+        "name": "Construction de logements",
+        "order_index": 1
+      },
+      {
+        "code": "HAB_02",
+        "name": "Acquisition de terrains",
+        "order_index": 2
+      },
+      {
+        "code": "HAB_03",
+        "name": "Lotissement",
+        "order_index": 3
+      },
+      {
+        "code": "HAB_04",
+        "name": "Habitat économique",
+        "order_index": 4
+      },
+      {
+        "code": "HAB_05",
+        "name": "Habitat rural",
+        "order_index": 5
+      },
+      {
+        "code": "HAB_06",
+        "name": "Rénovation",
+        "order_index": 6
+      },
+      {
+        "code": "HAB_07",
+        "name": "Gestion et entretien des résidences",
+        "order_index": 7
+      },
+      {
+        "code": "HAB_08",
+        "name": "Autre – à préciser",
+        "order_index": 8
+      }
+    ],
+    "desc": "Construction de logements, lotissement et habitat rural"
+  },
+  {
+    "id": 6,
+    "code": "ARG",
+    "name": "Argan",
+    "order_index": 6,
+    "sub_sectors": [
+      {
+        "code": "ARG_01",
+        "name": "Collecte des fruits",
+        "order_index": 1
+      },
+      {
+        "code": "ARG_02",
+        "name": "Concassage",
+        "order_index": 2
+      },
+      {
+        "code": "ARG_03",
+        "name": "Extraction d’huile alimentaire",
+        "order_index": 3
+      },
+      {
+        "code": "ARG_04",
+        "name": "Extraction d’huile cosmétique",
+        "order_index": 4
+      },
+      {
+        "code": "ARG_05",
+        "name": "Produits cosmétiques",
+        "order_index": 5
+      },
+      {
+        "code": "ARG_06",
+        "name": "Produits alimentaires à base d’argan",
+        "order_index": 6
+      },
+      {
+        "code": "ARG_07",
+        "name": "Conditionnement et commercialisation",
+        "order_index": 7
+      },
+      {
+        "code": "ARG_08",
+        "name": "Autre – à préciser",
+        "order_index": 8
+      }
+    ],
+    "desc": "Collecte, concassage, extraction d’huile cosmétique et alimentaire"
+  },
+  {
+    "id": 7,
+    "code": "EDU",
+    "name": "Éducation et enseignement",
+    "order_index": 7,
+    "sub_sectors": [
+      {
+        "code": "EDU_01",
+        "name": "Enseignement préscolaire",
+        "order_index": 1
+      },
+      {
+        "code": "EDU_02",
+        "name": "Enseignement scolaire",
+        "order_index": 2
+      },
+      {
+        "code": "EDU_03",
+        "name": "Alphabétisation",
+        "order_index": 3
+      },
+      {
+        "code": "EDU_04",
+        "name": "Formation professionnelle",
+        "order_index": 4
+      },
+      {
+        "code": "EDU_05",
+        "name": "Soutien scolaire",
+        "order_index": 5
+      },
+      {
+        "code": "EDU_06",
+        "name": "Formation linguistique",
+        "order_index": 6
+      },
+      {
+        "code": "EDU_07",
+        "name": "Formation numérique",
+        "order_index": 7
+      },
+      {
+        "code": "EDU_08",
+        "name": "Éducation spécialisée",
+        "order_index": 8
+      },
+      {
+        "code": "EDU_09",
+        "name": "Formation à distance",
+        "order_index": 9
+      },
+      {
+        "code": "EDU_10",
+        "name": "Autre – à préciser",
+        "order_index": 10
+      }
+    ],
+    "desc": "Préscolaire, enseignement, alphabétisation et formation professionnelle"
+  },
+  {
+    "id": 8,
+    "code": "DAL",
+    "name": "Denrées alimentaires",
+    "order_index": 8,
+    "sub_sectors": [
+      {
+        "code": "DAL_01",
+        "name": "Transformation des céréales",
+        "order_index": 1
+      },
+      {
+        "code": "DAL_02",
+        "name": "Boulangerie et pâtisserie",
+        "order_index": 2
+      },
+      {
+        "code": "DAL_03",
+        "name": "Couscous et pâtes",
+        "order_index": 3
+      },
+      {
+        "code": "DAL_04",
+        "name": "Transformation des fruits et légumes",
+        "order_index": 4
+      },
+      {
+        "code": "DAL_05",
+        "name": "Confitures",
+        "order_index": 5
+      },
+      {
+        "code": "DAL_06",
+        "name": "Conserverie",
+        "order_index": 6
+      },
+      {
+        "code": "DAL_07",
+        "name": "Produits laitiers",
+        "order_index": 7
+      },
+      {
+        "code": "DAL_08",
+        "name": "Transformation des viandes",
+        "order_index": 8
+      },
+      {
+        "code": "DAL_09",
+        "name": "Épices et condiments",
+        "order_index": 9
+      },
+      {
+        "code": "DAL_10",
+        "name": "Boissons",
+        "order_index": 10
+      },
+      {
+        "code": "DAL_11",
+        "name": "Produits du terroir",
+        "order_index": 11
+      },
+      {
+        "code": "DAL_12",
+        "name": "Autre – à préciser",
+        "order_index": 12
+      }
+    ],
+    "desc": "Transformation des céréales, couscous, conserverie et produits laitiers"
+  },
+  {
+    "id": 9,
+    "code": "TOU",
+    "name": "Tourisme",
+    "order_index": 9,
+    "sub_sectors": [
+      {
+        "code": "TOU_01",
+        "name": "Hébergement rural",
+        "order_index": 1
+      },
+      {
+        "code": "TOU_02",
+        "name": "Maisons d’hôtes",
+        "order_index": 2
+      },
+      {
+        "code": "TOU_03",
+        "name": "Restauration",
+        "order_index": 3
+      },
+      {
+        "code": "TOU_04",
+        "name": "Circuits touristiques",
+        "order_index": 4
+      },
+      {
+        "code": "TOU_05",
+        "name": "Guides et accompagnement",
+        "order_index": 5
+      },
+      {
+        "code": "TOU_06",
+        "name": "Écotourisme",
+        "order_index": 6
+      },
+      {
+        "code": "TOU_07",
+        "name": "Tourisme culturel",
+        "order_index": 7
+      },
+      {
+        "code": "TOU_08",
+        "name": "Tourisme solidaire",
+        "order_index": 8
+      },
+      {
+        "code": "TOU_09",
+        "name": "Animation touristique",
+        "order_index": 9
+      },
+      {
+        "code": "TOU_10",
+        "name": "Transport touristique",
+        "order_index": 10
+      },
+      {
+        "code": "TOU_11",
+        "name": "Autre – à préciser",
+        "order_index": 11
+      }
+    ],
+    "desc": "Hébergement rural, gîtes, restauration et circuits touristiques"
+  },
+  {
+    "id": 10,
+    "code": "PEC",
+    "name": "Pêche maritime",
+    "order_index": 10,
+    "sub_sectors": [
+      {
+        "code": "PEC_01",
+        "name": "Pêche artisanale",
+        "order_index": 1
+      },
+      {
+        "code": "PEC_02",
+        "name": "Pêche côtière",
+        "order_index": 2
+      },
+      {
+        "code": "PEC_03",
+        "name": "Aquaculture",
+        "order_index": 3
+      },
+      {
+        "code": "PEC_04",
+        "name": "Collecte des produits marins",
+        "order_index": 4
+      },
+      {
+        "code": "PEC_05",
+        "name": "Mareyage",
+        "order_index": 5
+      },
+      {
+        "code": "PEC_06",
+        "name": "Transformation et conservation",
+        "order_index": 6
+      },
+      {
+        "code": "PEC_07",
+        "name": "Fabrication et entretien des filets",
+        "order_index": 7
+      },
+      {
+        "code": "PEC_08",
+        "name": "Services aux pêcheurs",
+        "order_index": 8
+      },
+      {
+        "code": "PEC_09",
+        "name": "Autre – à préciser",
+        "order_index": 9
+      }
+    ],
+    "desc": "Pêche artisanale, côtière, aquaculture et mareyage"
+  },
+  {
+    "id": 11,
+    "code": "CAN",
+    "name": "Cannabis",
+    "order_index": 11,
+    "sub_sectors": [
+      {
+        "code": "CAN_01",
+        "name": "Culture autorisée",
+        "order_index": 1
+      },
+      {
+        "code": "CAN_02",
+        "name": "Production de semences et plants",
+        "order_index": 2
+      },
+      {
+        "code": "CAN_03",
+        "name": "Collecte",
+        "order_index": 3
+      },
+      {
+        "code": "CAN_04",
+        "name": "Transformation industrielle",
+        "order_index": 4
+      },
+      {
+        "code": "CAN_05",
+        "name": "Usages médicaux",
+        "order_index": 5
+      },
+      {
+        "code": "CAN_06",
+        "name": "Usages pharmaceutiques",
+        "order_index": 6
+      },
+      {
+        "code": "CAN_07",
+        "name": "Usages cosmétiques",
+        "order_index": 7
+      },
+      {
+        "code": "CAN_08",
+        "name": "Valorisation des fibres",
+        "order_index": 8
+      },
+      {
+        "code": "CAN_09",
+        "name": "Commercialisation réglementée",
+        "order_index": 9
+      },
+      {
+        "code": "CAN_10",
+        "name": "Autre – à préciser",
+        "order_index": 10
+      }
+    ],
+    "desc": "Culture autorisée, semences, transformation médicale et pharmaceutique"
+  },
+  {
+    "id": 12,
+    "code": "FOR",
+    "name": "Forêt",
+    "order_index": 12,
+    "sub_sectors": [
+      {
+        "code": "FOR_01",
+        "name": "Exploitation du bois",
+        "order_index": 1
+      },
+      {
+        "code": "FOR_02",
+        "name": "Collecte du bois mort",
+        "order_index": 2
+      },
+      {
+        "code": "FOR_03",
+        "name": "Pépinières forestières",
+        "order_index": 3
+      },
+      {
+        "code": "FOR_04",
+        "name": "Reboisement",
+        "order_index": 4
+      },
+      {
+        "code": "FOR_05",
+        "name": "Collecte des champignons",
+        "order_index": 5
+      },
+      {
+        "code": "FOR_06",
+        "name": "Collecte des plantes sauvages",
+        "order_index": 6
+      },
+      {
+        "code": "FOR_07",
+        "name": "Liège",
+        "order_index": 7
+      },
+      {
+        "code": "FOR_08",
+        "name": "Résines",
+        "order_index": 8
+      },
+      {
+        "code": "FOR_09",
+        "name": "Produits forestiers non ligneux",
+        "order_index": 9
+      },
+      {
+        "code": "FOR_10",
+        "name": "Autre – à préciser",
+        "order_index": 10
+      }
+    ],
+    "desc": "Exploitation du bois, pépinières forestières, liège et résines"
+  },
+  {
+    "id": 13,
+    "code": "SER",
+    "name": "Prestation de services",
+    "order_index": 13,
+    "sub_sectors": [
+      {
+        "code": "SER_01",
+        "name": "Nettoyage",
+        "order_index": 1
+      },
+      {
+        "code": "SER_02",
+        "name": "Gardiennage",
+        "order_index": 2
+      },
+      {
+        "code": "SER_03",
+        "name": "Entretien des espaces verts",
+        "order_index": 3
+      },
+      {
+        "code": "SER_04",
+        "name": "Restauration collective",
+        "order_index": 4
+      },
+      {
+        "code": "SER_05",
+        "name": "Organisation d’événements",
+        "order_index": 5
+      },
+      {
+        "code": "SER_06",
+        "name": "Services administratifs",
+        "order_index": 6
+      },
+      {
+        "code": "SER_07",
+        "name": "Services informatiques",
+        "order_index": 7
+      },
+      {
+        "code": "SER_08",
+        "name": "Réparation et maintenance",
+        "order_index": 8
+      },
+      {
+        "code": "SER_09",
+        "name": "Services à la personne",
+        "order_index": 9
+      },
+      {
+        "code": "SER_10",
+        "name": "Livraison",
+        "order_index": 10
+      },
+      {
+        "code": "SER_11",
+        "name": "Autre – à préciser",
+        "order_index": 11
+      }
+    ],
+    "desc": "Nettoyage, gardiennage, entretien d’espaces verts et logistique"
+  },
+  {
+    "id": 14,
+    "code": "REC",
+    "name": "Traitement et recyclage des déchets",
+    "order_index": 14,
+    "sub_sectors": [
+      {
+        "code": "REC_01",
+        "name": "Collecte et tri",
+        "order_index": 1
+      },
+      {
+        "code": "REC_02",
+        "name": "Recyclage du plastique",
+        "order_index": 2
+      },
+      {
+        "code": "REC_03",
+        "name": "Papier et carton",
+        "order_index": 3
+      },
+      {
+        "code": "REC_04",
+        "name": "Verre",
+        "order_index": 4
+      },
+      {
+        "code": "REC_05",
+        "name": "Métaux",
+        "order_index": 5
+      },
+      {
+        "code": "REC_06",
+        "name": "Textile",
+        "order_index": 6
+      },
+      {
+        "code": "REC_07",
+        "name": "Déchets électroniques",
+        "order_index": 7
+      },
+      {
+        "code": "REC_08",
+        "name": "Déchets organiques",
+        "order_index": 8
+      },
+      {
+        "code": "REC_09",
+        "name": "Compostage",
+        "order_index": 9
+      },
+      {
+        "code": "REC_10",
+        "name": "Valorisation des déchets agricoles",
+        "order_index": 10
+      },
+      {
+        "code": "REC_11",
+        "name": "Autre – à préciser",
+        "order_index": 11
+      }
+    ],
+    "desc": "Collecte, tri, recyclage plastique, papier, métaux et compostage"
+  },
+  {
+    "id": 15,
+    "code": "MDO",
+    "name": "Main-d’œuvre",
+    "order_index": 15,
+    "sub_sectors": [
+      {
+        "code": "MDO_01",
+        "name": "Main-d’œuvre agricole",
+        "order_index": 1
+      },
+      {
+        "code": "MDO_02",
+        "name": "Ouvriers du bâtiment",
+        "order_index": 2
+      },
+      {
+        "code": "MDO_03",
+        "name": "Manutention",
+        "order_index": 3
+      },
+      {
+        "code": "MDO_04",
+        "name": "Chargement et déchargement",
+        "order_index": 4
+      },
+      {
+        "code": "MDO_05",
+        "name": "Nettoyage",
+        "order_index": 5
+      },
+      {
+        "code": "MDO_06",
+        "name": "Entretien",
+        "order_index": 6
+      },
+      {
+        "code": "MDO_07",
+        "name": "Travaux saisonniers",
+        "order_index": 7
+      },
+      {
+        "code": "MDO_08",
+        "name": "Services techniques mutualisés",
+        "order_index": 8
+      },
+      {
+        "code": "MDO_09",
+        "name": "Autre – à préciser",
+        "order_index": 9
+      }
+    ],
+    "desc": "Main-d’œuvre agricole, ouvriers bâtiment, manutention et chantiers"
+  },
+  {
+    "id": 16,
+    "code": "TRA",
+    "name": "Transport",
+    "order_index": 16,
+    "sub_sectors": [
+      {
+        "code": "TRA_01",
+        "name": "Transport de personnes",
+        "order_index": 1
+      },
+      {
+        "code": "TRA_02",
+        "name": "Transport scolaire",
+        "order_index": 2
+      },
+      {
+        "code": "TRA_03",
+        "name": "Transport du personnel",
+        "order_index": 3
+      },
+      {
+        "code": "TRA_04",
+        "name": "Transport rural",
+        "order_index": 4
+      },
+      {
+        "code": "TRA_05",
+        "name": "Transport de marchandises",
+        "order_index": 5
+      },
+      {
+        "code": "TRA_06",
+        "name": "Livraison et distribution",
+        "order_index": 6
+      },
+      {
+        "code": "TRA_07",
+        "name": "Transport frigorifique",
+        "order_index": 7
+      },
+      {
+        "code": "TRA_08",
+        "name": "Logistique",
+        "order_index": 8
+      },
+      {
+        "code": "TRA_09",
+        "name": "Autre – à préciser",
+        "order_index": 9
+      }
+    ],
+    "desc": "Transport de personnes, scolaire, rural, marchandises et logistique"
+  },
+  {
+    "id": 17,
+    "code": "IMP",
+    "name": "Imprimerie",
+    "order_index": 17,
+    "sub_sectors": [
+      {
+        "code": "IMP_01",
+        "name": "Impression numérique",
+        "order_index": 1
+      },
+      {
+        "code": "IMP_02",
+        "name": "Impression offset",
+        "order_index": 2
+      },
+      {
+        "code": "IMP_03",
+        "name": "Sérigraphie",
+        "order_index": 3
+      },
+      {
+        "code": "IMP_04",
+        "name": "Papeterie",
+        "order_index": 4
+      },
+      {
+        "code": "IMP_05",
+        "name": "Reliure",
+        "order_index": 5
+      },
+      {
+        "code": "IMP_06",
+        "name": "Emballage",
+        "order_index": 6
+      },
+      {
+        "code": "IMP_07",
+        "name": "Étiquetage",
+        "order_index": 7
+      },
+      {
+        "code": "IMP_08",
+        "name": "Signalétique",
+        "order_index": 8
+      },
+      {
+        "code": "IMP_09",
+        "name": "Conception graphique",
+        "order_index": 9
+      },
+      {
+        "code": "IMP_10",
+        "name": "Autre – à préciser",
+        "order_index": 10
+      }
+    ],
+    "desc": "Impression numérique, offset, papeterie, emballage et reliure"
+  },
+  {
+    "id": 18,
+    "code": "ACU",
+    "name": "Art et culture",
+    "order_index": 18,
+    "sub_sectors": [
+      {
+        "code": "ACU_01",
+        "name": "Arts plastiques",
+        "order_index": 1
+      },
+      {
+        "code": "ACU_02",
+        "name": "Musique",
+        "order_index": 2
+      },
+      {
+        "code": "ACU_03",
+        "name": "Théâtre",
+        "order_index": 3
+      },
+      {
+        "code": "ACU_04",
+        "name": "Cinéma et audiovisuel",
+        "order_index": 4
+      },
+      {
+        "code": "ACU_05",
+        "name": "Photographie",
+        "order_index": 5
+      },
+      {
+        "code": "ACU_06",
+        "name": "Danse",
+        "order_index": 6
+      },
+      {
+        "code": "ACU_07",
+        "name": "Patrimoine culturel",
+        "order_index": 7
+      },
+      {
+        "code": "ACU_08",
+        "name": "Édition",
+        "order_index": 8
+      },
+      {
+        "code": "ACU_09",
+        "name": "Production culturelle",
+        "order_index": 9
+      },
+      {
+        "code": "ACU_10",
+        "name": "Événements et festivals",
+        "order_index": 10
+      },
+      {
+        "code": "ACU_11",
+        "name": "Industries créatives",
+        "order_index": 11
+      },
+      {
+        "code": "ACU_12",
+        "name": "Autre – à préciser",
+        "order_index": 12
+      }
+    ],
+    "desc": "Arts plastiques, musique, théâtre, audiovisuel et patrimoine"
+  },
+  {
+    "id": 19,
+    "code": "CAR",
+    "name": "Exploitation des carrières",
+    "order_index": 19,
+    "sub_sectors": [
+      {
+        "code": "CAR_01",
+        "name": "Pierre",
+        "order_index": 1
+      },
+      {
+        "code": "CAR_02",
+        "name": "Marbre",
+        "order_index": 2
+      },
+      {
+        "code": "CAR_03",
+        "name": "Sable",
+        "order_index": 3
+      },
+      {
+        "code": "CAR_04",
+        "name": "Gravier",
+        "order_index": 4
+      },
+      {
+        "code": "CAR_05",
+        "name": "Argile",
+        "order_index": 5
+      },
+      {
+        "code": "CAR_06",
+        "name": "Gypse",
+        "order_index": 6
+      },
+      {
+        "code": "CAR_07",
+        "name": "Concassage",
+        "order_index": 7
+      },
+      {
+        "code": "CAR_08",
+        "name": "Taille et transformation de pierre",
+        "order_index": 8
+      },
+      {
+        "code": "CAR_09",
+        "name": "Valorisation des matériaux",
+        "order_index": 9
+      },
+      {
+        "code": "CAR_10",
+        "name": "Autre – à préciser",
+        "order_index": 10
+      }
+    ],
+    "desc": "Pierre, marbre, sable, gravier, argile, concassage et taille"
+  },
+  {
+    "id": 20,
+    "code": "COG",
+    "name": "Conseil et gestion",
+    "order_index": 20,
+    "sub_sectors": [
+      {
+        "code": "COG_01",
+        "name": "Conseil en gestion",
+        "order_index": 1
+      },
+      {
+        "code": "COG_02",
+        "name": "Comptabilité",
+        "order_index": 2
+      },
+      {
+        "code": "COG_03",
+        "name": "Accompagnement juridique",
+        "order_index": 3
+      },
+      {
+        "code": "COG_04",
+        "name": "Études et ingénierie",
+        "order_index": 4
+      },
+      {
+        "code": "COG_05",
+        "name": "Conseil agricole",
+        "order_index": 5
+      },
+      {
+        "code": "COG_06",
+        "name": "Marketing et communication",
+        "order_index": 6
+      },
+      {
+        "code": "COG_07",
+        "name": "Gestion de projets",
+        "order_index": 7
+      },
+      {
+        "code": "COG_08",
+        "name": "Formation et accompagnement entrepreneurial",
+        "order_index": 8
+      },
+      {
+        "code": "COG_09",
+        "name": "Autre – à préciser",
+        "order_index": 9
+      }
+    ],
+    "desc": "Conseil en gestion, comptabilité, juridique, ingénierie et projets"
+  },
+  {
+    "id": 21,
+    "code": "ECE",
+    "name": "Commerce électronique",
+    "order_index": 21,
+    "sub_sectors": [
+      {
+        "code": "ECE_01",
+        "name": "Vente de produits agricoles",
+        "order_index": 1
+      },
+      {
+        "code": "ECE_02",
+        "name": "Vente de produits artisanaux",
+        "order_index": 2
+      },
+      {
+        "code": "ECE_03",
+        "name": "Place de marché (marketplace)",
+        "order_index": 3
+      },
+      {
+        "code": "ECE_04",
+        "name": "Gestion de boutiques en ligne",
+        "order_index": 4
+      },
+      {
+        "code": "ECE_05",
+        "name": "Livraison liée au commerce électronique",
+        "order_index": 5
+      },
+      {
+        "code": "ECE_06",
+        "name": "Marketing numérique",
+        "order_index": 6
+      },
+      {
+        "code": "ECE_07",
+        "name": "Paiement et gestion des commandes",
+        "order_index": 7
+      },
+      {
+        "code": "ECE_08",
+        "name": "Autre – à préciser",
+        "order_index": 8
+      }
+    ],
+    "desc": "Boutiques en ligne, vente directe, marketplaces et livraisons"
+  },
+  {
+    "id": 22,
+    "code": "TEL",
+    "name": "Télécommunication",
+    "order_index": 22,
+    "sub_sectors": [
+      {
+        "code": "TEL_01",
+        "name": "Installation de réseaux",
+        "order_index": 1
+      },
+      {
+        "code": "TEL_02",
+        "name": "Fibre optique",
+        "order_index": 2
+      },
+      {
+        "code": "TEL_03",
+        "name": "Maintenance télécom",
+        "order_index": 3
+      },
+      {
+        "code": "TEL_04",
+        "name": "Services Internet",
+        "order_index": 4
+      },
+      {
+        "code": "TEL_05",
+        "name": "Centres d’appels",
+        "order_index": 5
+      },
+      {
+        "code": "TEL_06",
+        "name": "Installation d’antennes",
+        "order_index": 6
+      },
+      {
+        "code": "TEL_07",
+        "name": "Solutions numériques et connectivité",
+        "order_index": 7
+      },
+      {
+        "code": "TEL_08",
+        "name": "Autre – à préciser",
+        "order_index": 8
+      }
+    ],
+    "desc": "Réseaux, fibre optique, maintenance télécom et centres d’appels"
+  },
+  {
+    "id": 23,
+    "code": "MIN",
+    "name": "Mines",
+    "order_index": 23,
+    "sub_sectors": [
+      {
+        "code": "MIN_01",
+        "name": "Extraction minière artisanale",
+        "order_index": 1
+      },
+      {
+        "code": "MIN_02",
+        "name": "Exploration",
+        "order_index": 2
+      },
+      {
+        "code": "MIN_03",
+        "name": "Traitement des minerais",
+        "order_index": 3
+      },
+      {
+        "code": "MIN_04",
+        "name": "Valorisation des minerais",
+        "order_index": 4
+      },
+      {
+        "code": "MIN_05",
+        "name": "Services aux exploitations minières",
+        "order_index": 5
+      },
+      {
+        "code": "MIN_06",
+        "name": "Maintenance des équipements",
+        "order_index": 6
+      },
+      {
+        "code": "MIN_07",
+        "name": "Transport des minerais",
+        "order_index": 7
+      },
+      {
+        "code": "MIN_08",
+        "name": "Autre – à préciser",
+        "order_index": 8
+      }
+    ],
+    "desc": "Extraction artisanale, valorisation minerais et services aux mines"
+  },
+  {
+    "id": 24,
+    "code": "CON",
+    "name": "Consommation",
+    "order_index": 24,
+    "sub_sectors": [
+      {
+        "code": "CON_01",
+        "name": "Achats groupés alimentaires",
+        "order_index": 1
+      },
+      {
+        "code": "CON_02",
+        "name": "Produits ménagers",
+        "order_index": 2
+      },
+      {
+        "code": "CON_03",
+        "name": "Fournitures scolaires",
+        "order_index": 3
+      },
+      {
+        "code": "CON_04",
+        "name": "Équipements domestiques",
+        "order_index": 4
+      },
+      {
+        "code": "CON_05",
+        "name": "Produits de santé et d’hygiène",
+        "order_index": 5
+      },
+      {
+        "code": "CON_06",
+        "name": "Distribution mutualisée aux adhérents",
+        "order_index": 6
+      },
+      {
+        "code": "CON_07",
+        "name": "Autre – à préciser",
+        "order_index": 7
+      }
+    ],
+    "desc": "Achats groupés, fournitures, équipements et alimentation mutualisée"
+  }
+];
