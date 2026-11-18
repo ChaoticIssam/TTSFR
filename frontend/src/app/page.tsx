@@ -389,39 +389,45 @@ export default function HomePage() {
       </section>
 
       {/* =====================================================================
-          SECTION 1 : NOTRE APPROCHE (Texte officiel + Schéma + 3 Coopératives Pilotes)
+          SECTION 1 : NOTRE APPROCHE (Texte officiel + 3 Coopératives Pilotes)
          ===================================================================== */}
       <section id="approche" className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-6 space-y-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
-                Notre approche
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                Un accompagnement adapté aux réalités de chaque coopérative
-              </h2>
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="max-w-3xl">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+              Notre approche
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Un accompagnement adapté aux réalités de chaque coopérative
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] mb-2">
+                01 • Diagnostic &amp; Terrain
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Nous accompagnons les coopératives dans le renforcement de leurs capacités techniques, économiques et organisationnelles. Notre approche associe diagnostic de terrain, transfert de solutions, formation et suivi des effets obtenus, pour construire avec les membres des réponses adaptées à leurs activités et à leurs priorités.
-              </p>
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                Chaque coopérative présente des besoins spécifiques selon son secteur, ses procédés de production, ses ressources et son niveau de maturité. Nous partons de ces réalités pour définir un parcours d’accompagnement progressif, fondé sur des outils concrets et sur leur appropriation par les personnes qui les utilisent au quotidien.
-              </p>
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                Notre modèle relie la performance de l’activité à la création de valeur et au bien-être des membres. Il vise à améliorer la gestion, la qualité des produits et l’accès aux marchés, tout en renforçant l’autonomie des coopératives et la durabilité de leurs pratiques.
               </p>
             </div>
 
-            <div className="lg:col-span-6">
-              <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <Image
-                  src="/images/modele_evolutif_hexagones.png"
-                  alt="Un Modèle Évolutif pour la Transformation Durable des Coopératives"
-                  width={900}
-                  height={500}
-                  className="w-full h-auto rounded-xl object-contain"
-                />
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] mb-2">
+                02 • Parcours Progressif
               </div>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Chaque coopérative présente des besoins spécifiques selon son secteur, ses procédés de production, ses ressources et son niveau de maturité. Nous partons de ces réalités pour définir un parcours d’accompagnement progressif, fondé sur des outils concrets et sur leur appropriation par les personnes qui les utilisent au quotidien.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+              <div className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] mb-2">
+                03 • Valeur, Autonomie &amp; Durabilité
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Notre modèle relie la performance de l’activité à la création de valeur et au bien-être des membres. Il vise à améliorer la gestion, la qualité des produits et l’accès aux marchés, tout en renforçant l’autonomie des coopératives et la durabilité de leurs pratiques.
+              </p>
             </div>
           </div>
 
@@ -557,7 +563,7 @@ export default function HomePage() {
           </div>
 
           {/* Les 5 principes de notre intervention */}
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-8">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-6">
             <div className="max-w-2xl">
               <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
                 Principes directeurs
@@ -571,28 +577,21 @@ export default function HomePage() {
               {INTERVENTION_PRINCIPLES.map((p) => (
                 <div
                   key={p.num}
-                  className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between"
+                  className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between"
                 >
                   <div>
-                    <span className="text-xs font-extrabold text-[#0F4C3A] block mb-1">
-                      {p.num} · {p.title}
+                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200/80 text-[11px] font-extrabold text-[#0F4C3A] mb-2">
+                      Principe {p.num}
                     </span>
+                    <h4 className="text-sm font-bold text-slate-900 mb-1">
+                      {p.title}
+                    </h4>
                     <p className="text-xs text-slate-600 leading-relaxed">
                       {p.desc}
                     </p>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="pt-2">
-              <Image
-                src="/images/principes_accompagnement.png"
-                alt="Les 5 principes de l'accompagnement des coopératives"
-                width={1000}
-                height={520}
-                className="w-full max-w-4xl mx-auto h-auto rounded-xl object-contain"
-              />
             </div>
           </div>
         </div>
@@ -612,42 +611,28 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {VALUES_LIST.map((val) => {
-                const Icon = val.icon;
-                return (
-                  <div
-                    key={val.title}
-                    className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex items-start space-x-3.5"
-                  >
-                    <div className="h-9 w-9 rounded-xl bg-white border border-slate-200 text-[#0F4C3A] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
-                      <Icon className="h-4.5 w-4.5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900">
-                        {val.title}
-                      </h3>
-                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                        {val.desc}
-                      </p>
-                    </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {VALUES_LIST.map((val) => {
+              const Icon = val.icon;
+              return (
+                <div
+                  key={val.title}
+                  className="p-6 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex items-start space-x-4 hover:border-slate-300 transition"
+                >
+                  <div className="h-10 w-10 rounded-xl bg-white border border-slate-200 text-[#0F4C3A] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+                    <Icon className="h-5 w-5" />
                   </div>
-                );
-              })}
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                <Image
-                  src="/images/valeurs_accompagnement.png"
-                  alt="Les valeurs de notre accompagnement"
-                  width={700}
-                  height={950}
-                  className="w-full h-auto rounded-xl object-contain"
-                />
-              </div>
-            </div>
+                  <div>
+                    <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                      {val.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+                      {val.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
