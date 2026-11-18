@@ -431,6 +431,17 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Schéma officiel du Modèle Évolutif */}
+          <div className="bg-white p-5 sm:p-8 rounded-2xl border border-slate-200/90 shadow-sm">
+            <Image
+              src="/images/modele_evolutif_hexagones.png"
+              alt="Un Modèle Évolutif pour la Transformation Durable des Coopératives"
+              width={1100}
+              height={600}
+              className="w-full max-w-5xl mx-auto h-auto rounded-xl object-contain"
+            />
+          </div>
+
           {/* Encart : Une démarche éprouvée auprès de trois coopératives pilotes */}
           <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="max-w-3xl">
