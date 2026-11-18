@@ -63,8 +63,29 @@ def save_diagnostic_draft(
     """
     Auto-save diagnostic progress.
     Guarded by strict tenant isolation (Cooperative A cannot write to Cooperative B).
+    Never overwrites or shadows an already SUBMITTED diagnostic status.
     """
     verify_cooperative_access(cooperative_id, current_user)
+
+    submitted_diag = (
+        db.query(DiagnosticSubmission)
+        .filter(
+            DiagnosticSubmission.cooperative_id == cooperative_id,
+            DiagnosticSubmission.status == DiagnosticStatus.SUBMITTED,
+        )
+        .order_by(DiagnosticSubmission.created_at.desc())
+        .first()
+    )
+
+    if submitted_diag:
+        # Remove any stray DRAFT rows that would shadow the submitted diagnostic
+        db.query(DiagnosticSubmission).filter(
+            DiagnosticSubmission.cooperative_id == cooperative_id,
+            DiagnosticSubmission.status == DiagnosticStatus.DRAFT,
+        ).delete(synchronize_session=False)
+        db.commit()
+        db.refresh(submitted_diag)
+        return submitted_diag
 
     diag = (
         db.query(DiagnosticSubmission)
@@ -89,6 +110,7 @@ def save_diagnostic_draft(
         updated_answers = dict(diag.answers or {})
         updated_answers.update(payload.answers)
         diag.answers = updated_answers
+        flag_modified(diag, "answers")
 
     db.commit()
     db.refresh(diag)
@@ -118,26 +140,33 @@ def submit_diagnostic(
     cluster = db.query(Cluster).filter(Cluster.code == evaluation["cluster_code"]).first()
     cluster_id = cluster.id if cluster else None
 
-    diag = (
+    rows = (
         db.query(DiagnosticSubmission)
-        .filter(
-            DiagnosticSubmission.cooperative_id == cooperative_id,
-            DiagnosticSubmission.status == DiagnosticStatus.DRAFT,
-        )
-        .order_by(DiagnosticSubmission.created_at.desc())
-        .first()
+        .filter(DiagnosticSubmission.cooperative_id == cooperative_id)
+        .order_by(DiagnosticSubmission.created_at.asc())
+        .all()
     )
+    diag = next((r for r in rows if r.status == DiagnosticStatus.SUBMITTED), rows[0] if rows else None)
+    for r in rows:
+        if r is not diag:
+            db.delete(r)
 
     if not diag:
         diag = DiagnosticSubmission(cooperative_id=cooperative_id)
         db.add(diag)
 
+    existing_answers = dict(diag.answers or {})
     diag.status = DiagnosticStatus.SUBMITTED
     diag.current_step = 5
     enriched_answers = {
         k: v for k, v in (payload.answers or {}).items()
         if k not in ("cluster_compatibilities", "cluster_code")
     }
+    if "checklist_entries" in existing_answers and "checklist_entries" not in enriched_answers:
+        enriched_answers["checklist_entries"] = existing_answers["checklist_entries"]
+    if "impact_entries" in existing_answers and "impact_entries" not in enriched_answers:
+        enriched_answers["impact_entries"] = existing_answers["impact_entries"]
+
     enriched_answers["cluster_compatibilities"] = {
         (k.value if hasattr(k, "value") else str(k)): v
         for k, v in evaluation["cluster_compatibilities"].items()
@@ -170,10 +199,36 @@ def get_latest_diagnostic(
     db: Session = Depends(get_db)
 ):
     """
-    Retrieves latest diagnostic for a cooperative.
+    Retrieves latest diagnostic for a cooperative, prioritizing SUBMITTED diagnostics
+    and cleaning up any accidental leftover DRAFT rows that would shadow it.
     Guarded by strict tenant isolation.
     """
     verify_cooperative_access(cooperative_id, current_user)
+
+    submitted_diag = (
+        db.query(DiagnosticSubmission)
+        .filter(
+            DiagnosticSubmission.cooperative_id == cooperative_id,
+            DiagnosticSubmission.status == DiagnosticStatus.SUBMITTED,
+        )
+        .order_by(DiagnosticSubmission.created_at.desc())
+        .first()
+    )
+    if submitted_diag:
+        leftover_drafts = (
+            db.query(DiagnosticSubmission)
+            .filter(
+                DiagnosticSubmission.cooperative_id == cooperative_id,
+                DiagnosticSubmission.status == DiagnosticStatus.DRAFT,
+            )
+            .all()
+        )
+        if leftover_drafts:
+            for d in leftover_drafts:
+                db.delete(d)
+            db.commit()
+            db.refresh(submitted_diag)
+        return submitted_diag
 
     diag = (
         db.query(DiagnosticSubmission)

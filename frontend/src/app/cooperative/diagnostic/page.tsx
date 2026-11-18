@@ -343,7 +343,7 @@ export default function DiagnosticWizard() {
 
   // Debounced auto-save to draft endpoint
   useEffect(() => {
-    if (!token || isSubmitted) return;
+    if (!token || isSubmitted || isInitialLoading) return;
 
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);
