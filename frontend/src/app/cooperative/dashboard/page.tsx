@@ -440,7 +440,7 @@ function CooperativeDashboardContent() {
               >
                 <span>
                   {latestDiag?.status === "SUBMITTED"
-                    ? "Voir ou modifier mon diagnostic"
+                    ? "Consulter ma synthèse diagnostic"
                     : "Accéder au diagnostic"}
                 </span>
                 <ArrowRight className="h-4 w-4 ml-2 flex-shrink-0" />

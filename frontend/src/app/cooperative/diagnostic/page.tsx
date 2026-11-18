@@ -197,6 +197,7 @@ export default function DiagnosticWizard() {
   const [answers, setAnswers] = useState<Record<string, any>>({});
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showRevisionConfirm, setShowRevisionConfirm] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -499,7 +500,31 @@ export default function DiagnosticWizard() {
     <div className="w-full">
       {/* Horizontal Desktop Stepper */}
         {!isSubmitted && (
-          <div className="mb-8 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <>
+            {submissionResult && (
+              <div className="mb-4 bg-emerald-50/90 border border-emerald-200 rounded-2xl px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center space-x-2.5 text-xs text-[#0F4C3A]">
+                  <ShieldCheck className="h-4 w-4 flex-shrink-0" />
+                  <span>
+                    <strong>Mode révision / simulation :</strong> Votre diagnostic initial validé reste conservé tant que vous ne soumettez pas la dernière étape.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (submissionResult.answers) {
+                      setAnswers(submissionResult.answers as Record<string, any>);
+                    }
+                    setIsSubmitted(true);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white text-xs font-bold transition whitespace-nowrap self-start sm:self-auto"
+                >
+                  Voir ma synthèse validée
+                </button>
+              </div>
+            )}
+            <div className="mb-8 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div className="grid grid-cols-5 gap-2">
               {stepLabels.map((s) => {
                 const isCurrent = step === s.num;
@@ -541,7 +566,8 @@ export default function DiagnosticWizard() {
                 style={{ width: `${(step / 5) * 100}%` }}
               />
             </div>
-          </div>
+            </div>
+          </>
         )}
 
         {/* Wizard Card Body */}
@@ -974,6 +1000,10 @@ export default function DiagnosticWizard() {
               {/* En-tête principal avec cluster et score de compatibilité */}
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 mb-8 border-b border-slate-200">
                 <div>
+                  <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[#0F4C3A] text-[11px] font-bold mb-2">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    <span>Module 01 — Diagnostic initial validé (Situation de référence)</span>
+                  </div>
                   <h1 className="text-2xl font-bold text-slate-900">
                     Synthèse de votre diagnostic
                   </h1>
@@ -1140,12 +1170,55 @@ export default function DiagnosticWizard() {
 
                 <button
                   type="button"
-                  onClick={() => setIsSubmitted(false)}
+                  onClick={() => setShowRevisionConfirm(true)}
                   className="inline-flex items-center justify-center px-5 py-3 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium transition text-center"
                 >
-                  Modifier mes réponses
+                  Réviser / Simuler une modification
                 </button>
               </div>
+
+              {/* Modale de confirmation de révision du diagnostic initial */}
+              {showRevisionConfirm && (
+                <div
+                  className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4"
+                  onClick={() => setShowRevisionConfirm(false)}
+                >
+                  <div
+                    className="bg-white rounded-2xl border border-slate-200 max-w-md w-full p-6 shadow-xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h3 className="text-base font-bold text-slate-900">
+                      Ouvrir le mode révision du diagnostic ?
+                    </h3>
+                    <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                      Votre diagnostic initial (<strong className="text-slate-900">Module 01</strong>) est déjà validé et constitue la situation de référence de votre coopérative.
+                    </p>
+                    <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                      En ouvrant le mode révision, vous pourrez consulter ou simuler un changement de réponses. Votre synthèse actuelle restera intacte tant que vous ne validez pas l&apos;étape 5.
+                    </p>
+                    <div className="mt-6 flex items-center justify-end gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setShowRevisionConfirm(false)}
+                        className="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition"
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowRevisionConfirm(false);
+                          setIsSubmitted(false);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                        className="px-4 py-2 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white text-xs font-semibold transition"
+                      >
+                        Ouvrir en mode révision
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
