@@ -12,7 +12,12 @@ from app.core.security import (
     verify_cooperative_access,
 )
 from app.models import DiagnosticSubmission, DiagnosticStatus, Cooperative, Cluster, User, UserRole, Sector, SubSector
-from app.schemas.diagnostic import DiagnosticDraftSave, DiagnosticSubmitRequest, DiagnosticResponse
+from app.schemas.diagnostic import (
+    DiagnosticDraftSave,
+    DiagnosticSubmitRequest,
+    AccompagnementUpdateRequest,
+    DiagnosticResponse,
+)
 from app.services.scoring_engine import ScoringEngine
 
 router = APIRouter()
@@ -220,3 +225,40 @@ def get_my_latest_diagnostic(
         current_user=current_user,
         db=db
     )
+
+@router.post("/my-accompagnement", response_model=DiagnosticResponse)
+def save_my_accompagnement(
+    payload: AccompagnementUpdateRequest,
+    current_user: User = Depends(get_current_cooperative_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Persists the cooperative's personalized accompaniment checklist entries (L001..L099)
+    and impact tracker values (KPI, KVI, KWI) inside the latest diagnostic record.
+    """
+    diag = (
+        db.query(DiagnosticSubmission)
+        .filter(DiagnosticSubmission.cooperative_id == current_user.cooperative.id)
+        .order_by(DiagnosticSubmission.created_at.desc())
+        .first()
+    )
+    if not diag:
+        diag = DiagnosticSubmission(
+            cooperative_id=current_user.cooperative.id,
+            status=DiagnosticStatus.DRAFT,
+            current_step=1,
+            answers={},
+        )
+        db.add(diag)
+
+    updated_answers = dict(diag.answers or {})
+    if payload.checklist_entries is not None:
+        updated_answers["checklist_entries"] = payload.checklist_entries
+    if payload.impact_entries is not None:
+        updated_answers["impact_entries"] = payload.impact_entries
+
+    diag.answers = updated_answers
+    flag_modified(diag, "answers")
+    db.commit()
+    db.refresh(diag)
+    return diag

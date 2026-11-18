@@ -10,6 +10,10 @@ class DiagnosticDraftSave(BaseModel):
 class DiagnosticSubmitRequest(BaseModel):
     answers: Dict[str, Any]
 
+class AccompagnementUpdateRequest(BaseModel):
+    checklist_entries: Optional[Dict[str, Any]] = None
+    impact_entries: Optional[Dict[str, Any]] = None
+
 class DiagnosticResponse(BaseModel):
     id: UUID
     cooperative_id: UUID

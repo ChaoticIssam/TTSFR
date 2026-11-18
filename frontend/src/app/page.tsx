@@ -8,11 +8,14 @@ import {
   Leaf,
   Users,
   BookOpen,
-  Building2,
-  Sparkles,
   BarChart3,
   Layers,
-  ChevronRight,
+  Compass,
+  HeartHandshake,
+  Scale,
+  Lightbulb,
+  Heart,
+  MapPin,
 } from "lucide-react";
 
 type Partner = {
@@ -49,7 +52,6 @@ const PARTNERS: Partner[] = [
     name: "Fondation OCP",
     role: "Soutien Institutionnel",
     desc: "Soutien stratégique et accompagnement terrain des coopératives marocaines.",
-    // TODO: remplacer par le logo officiel fourni par la Fondation OCP
     wordmark: "Fondation OCP",
   },
   {
@@ -63,15 +65,164 @@ const PARTNERS: Partner[] = [
   },
 ];
 
+const SIX_DOMAINS = [
+  {
+    title: "Mise à niveau technique",
+    kicker: "Module 02 • Procédés & Équipements",
+    desc: "Améliorer les procédés de production, adapter les équipements et structurer les outils de gestion des coûts, des stocks et de l’organisation du travail.",
+    axis: "Axe Opérationnel",
+    tag: "Procédés & Gestion",
+    icon: Cpu,
+  },
+  {
+    title: "Certification et conformité QHSE",
+    kicker: "Module 03 • Qualité, Hygiène & Sécurité",
+    desc: "Accompagner les démarches de qualité, d’hygiène, de sécurité et d’environnement grâce à la traçabilité, à la maîtrise des risques et à la préparation aux exigences de conformité et de certification.",
+    axis: "Axe Normatif",
+    tag: "QHSE & ONSSA",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Durabilité et économie circulaire",
+    kicker: "Module 04 • Ressources & Circularité",
+    desc: "Favoriser une utilisation responsable des ressources, la réduction des impacts environnementaux et la valorisation des matières et des sous-produits.",
+    axis: "Axe Durable",
+    tag: "Économie Circulaire",
+    icon: Leaf,
+  },
+  {
+    title: "Digitalisation et visibilité",
+    kicker: "Module 05 • Numérique & Commercialisation",
+    desc: "Développer l’usage des outils numériques pour la gestion, la communication, la visibilité des produits et la commercialisation en ligne.",
+    axis: "Axe Numérique",
+    tag: "Visibilité & E-commerce",
+    icon: BookOpen,
+  },
+  {
+    title: "Formation et renforcement des capacités",
+    kicker: "Module 06 • Compétences & Autonomie",
+    desc: "Proposer des apprentissages pratiques adaptés aux besoins des membres et faciliter l’utilisation autonome des outils et des équipements.",
+    axis: "Axe Humain",
+    tag: "Capability Building",
+    icon: Users,
+  },
+  {
+    title: "Suivi et étude d’impact",
+    kicker: "Module 07 • KPI, KVI & KWI",
+    desc: "Mesurer les évolutions de la performance, de la valeur créée et du bien-être des membres pour ajuster l’accompagnement.",
+    axis: "Axe Stratégique",
+    tag: "Mesure d'Impact",
+    icon: BarChart3,
+  },
+];
+
+const METHODOLOGY_STEPS = [
+  {
+    num: "01",
+    title: "Identifier les coopératives et leur contexte",
+    desc: "Nous identifions les coopératives à accompagner et recueillons les premières informations sur leur activité, leur organisation et leur environnement. Une grille multicritère aide à structurer l’analyse et la sélection des structures pilotes.",
+  },
+  {
+    num: "02",
+    title: "Diagnostiquer les besoins et les capacités",
+    desc: "Nous analysons les pratiques de production, les équipements, la gestion, la qualité, les compétences et les usages numériques. Les échanges avec les membres permettent de préciser les difficultés rencontrées et les priorités d’amélioration. Le positionnement tient compte du secteur d’activité, selon le cadre de l’Office du Développement de la Coopération, ainsi que des caractéristiques techniques et du niveau de maturité de la coopérative.",
+  },
+  {
+    num: "03",
+    title: "Construire un plan d’action personnalisé",
+    desc: "À partir du diagnostic, nous définissons avec la coopérative les actions prioritaires, les ressources nécessaires, les responsabilités et les résultats recherchés. Le parcours mobilise les domaines d’accompagnement utiles à sa situation.",
+  },
+  {
+    num: "04",
+    title: "Déployer les solutions sur le terrain",
+    desc: "Nous accompagnons la mise en œuvre des solutions retenues : amélioration des équipements et des procédés, outils de gestion, traçabilité, organisation du travail, pratiques durables ou supports de commercialisation.",
+  },
+  {
+    num: "05",
+    title: "Former et faciliter l’appropriation",
+    desc: "Des formations, ateliers pratiques et guides d’utilisation aident les membres à prendre en main les solutions. L’objectif est de permettre leur utilisation dans les activités quotidiennes et de renforcer progressivement l’autonomie de la coopérative.",
+  },
+  {
+    num: "06",
+    title: "Mesurer les effets et ajuster",
+    desc: "Nous suivons les progrès et recueillons les retours des bénéficiaires afin d’ajuster les actions et de capitaliser les enseignements.",
+  },
+];
+
+const INTERVENTION_PRINCIPLES = [
+  {
+    num: "01",
+    title: "Co-construction",
+    desc: "Associer les membres au diagnostic, aux choix et à l’évaluation.",
+  },
+  {
+    num: "02",
+    title: "Adaptation",
+    desc: "Tenir compte des contraintes techniques, humaines, territoriales et saisonnières.",
+  },
+  {
+    num: "03",
+    title: "Progressivité",
+    desc: "Organiser les améliorations selon les priorités et les capacités de la coopérative.",
+  },
+  {
+    num: "04",
+    title: "Apprentissage pratique",
+    desc: "Relier les formations aux outils et aux situations de travail.",
+  },
+  {
+    num: "05",
+    title: "Amélioration continue",
+    desc: "Utiliser les indicateurs et les retours de terrain pour faire évoluer les actions.",
+  },
+];
+
+const VALUES_LIST = [
+  {
+    title: "Proximité",
+    desc: "Comprendre les réalités du terrain et construire une relation d’écoute avec les membres pour proposer des réponses utiles à leur quotidien.",
+    icon: MapPin,
+  },
+  {
+    title: "Co-construction",
+    desc: "Associer les coopératives aux décisions et reconnaître l’expérience de leurs membres dans la définition des solutions.",
+    icon: HeartHandshake,
+  },
+  {
+    title: "Équité",
+    desc: "Favoriser une répartition équilibrée des responsabilités et du travail, en tenant compte des capacités et de la contribution de chaque membre.",
+    icon: Scale,
+  },
+  {
+    title: "Autonomie",
+    desc: "Transmettre les compétences et les outils nécessaires pour permettre aux coopératives de piloter leur activité et de poursuivre leurs progrès.",
+    icon: Compass,
+  },
+  {
+    title: "Innovation utile",
+    desc: "Adapter les solutions techniques et numériques aux besoins réels, avec une attention particulière à leur simplicité d’utilisation et à leur appropriation.",
+    icon: Lightbulb,
+  },
+  {
+    title: "Durabilité",
+    desc: "Intégrer la préservation des ressources, la valorisation des matières et la réduction des impacts environnementaux dans les pratiques de la coopérative.",
+    icon: Leaf,
+  },
+  {
+    title: "Bien-être au travail",
+    desc: "Prendre en compte la sécurité, l’ergonomie, la satisfaction et l’engagement des membres dans l’amélioration de la performance.",
+    icon: Heart,
+  },
+];
+
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* Top Institutional Header */}
       <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/90 sticky top-0 z-50 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 h-18 sm:h-20 flex items-center justify-between gap-4">
-          
-          {/* Left: Official Logos (UM6P | GTI) + Anchor Subroutes pushed to the left */}
-          <div className="flex items-center space-x-6 xl:space-x-10">
+          {/* Left: Official Logos (UM6P | GTI) + Anchor Subroutes */}
+          <div className="flex items-center space-x-5 xl:space-x-8">
             <Link href="/" className="flex items-center flex-shrink-0 group">
               <Image
                 src="/images/logo_um6p_gti.png"
@@ -83,29 +234,40 @@ export default function HomePage() {
               />
             </Link>
 
-            {/* Subroutes navigation with plenty of breathing room */}
-            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 text-xs xl:text-sm font-semibold text-slate-600 whitespace-nowrap">
+            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-1.5 text-xs xl:text-sm font-semibold text-slate-600 whitespace-nowrap">
               <a
                 href="#approche"
-                className="px-2.5 py-1.5 xl:px-3 xl:py-2 rounded-xl whitespace-nowrap hover:text-[#0F4C3A] hover:bg-slate-50 transition"
+                className="px-2.5 py-1.5 rounded-xl hover:text-[#0F4C3A] hover:bg-slate-50 transition"
               >
                 Notre approche
               </a>
               <a
                 href="#domaines"
-                className="px-2.5 py-1.5 xl:px-3 xl:py-2 rounded-xl whitespace-nowrap hover:text-[#0F4C3A] hover:bg-slate-50 transition"
+                className="px-2.5 py-1.5 rounded-xl hover:text-[#0F4C3A] hover:bg-slate-50 transition"
               >
-                Domaines d'accompagnement
+                Six domaines
               </a>
               <a
-                href="#clusters"
-                className="px-2.5 py-1.5 xl:px-3 xl:py-2 rounded-xl whitespace-nowrap hover:text-[#0F4C3A] hover:bg-slate-50 transition"
+                href="#methodologie"
+                className="px-2.5 py-1.5 rounded-xl hover:text-[#0F4C3A] hover:bg-slate-50 transition"
               >
-                Clusters de maturité
+                Méthodologie
+              </a>
+              <a
+                href="#valeurs"
+                className="px-2.5 py-1.5 rounded-xl hover:text-[#0F4C3A] hover:bg-slate-50 transition"
+              >
+                Valeurs
+              </a>
+              <a
+                href="#equipe"
+                className="px-2.5 py-1.5 rounded-xl hover:text-[#0F4C3A] hover:bg-slate-50 transition"
+              >
+                Nous découvrir
               </a>
               <a
                 href="#partenaires"
-                className="px-2.5 py-1.5 xl:px-3 xl:py-2 rounded-xl whitespace-nowrap hover:text-[#0F4C3A] hover:bg-slate-50 transition"
+                className="px-2.5 py-1.5 rounded-xl hover:text-[#0F4C3A] hover:bg-slate-50 transition"
               >
                 Partenaires
               </a>
@@ -128,282 +290,219 @@ export default function HomePage() {
               <ArrowRight className="ml-1.5 h-3.5 w-3.5 hidden sm:inline" />
             </Link>
           </div>
-
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white py-16 sm:py-20 lg:py-24 border-b border-slate-200">
+      <section className="bg-white py-14 sm:py-20 border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-            
-            {/* Left Column: Value Proposition & CTAs (7 cols on lg) */}
+            {/* Left Column: Value Proposition & CTAs */}
             <div className="lg:col-span-7 flex flex-col justify-center">
-              
-              {/* Main Headline */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.18] mb-6">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-[#0F4C3A] text-xs font-bold w-fit mb-4">
+                <span>UM6P • Green Tech Institute • Fondation OCP</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.16] mb-5">
                 Un Modèle Évolutif pour la{" "}
                 <span className="text-[#0F4C3A]">Transformation Durable</span>{" "}
                 des Coopératives
               </h1>
 
-              {/* Subtitle */}
-              <p className="text-base sm:text-lg text-slate-600 mb-8 leading-relaxed max-w-xl">
-                La plateforme d'ingénierie et d'accompagnement technique conçue pour évaluer les maturités opérationnelle, économique, organisationnelle et énergétique selon la nomenclature officielle ODCO, et prescrire des feuilles de route adaptées.
+              <p className="text-base sm:text-lg text-slate-600 mb-8 leading-relaxed max-w-2xl">
+                Un accompagnement adapté aux réalités de chaque coopérative, associant diagnostic de terrain, transfert de solutions, formation et suivi des effets obtenus pour renforcer la performance, la création de valeur et le bien-être des membres.
               </p>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
                 <Link
                   href="/cooperative/diagnostic"
                   className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white transition shadow-sm hover:shadow"
                 >
-                  <span>Démarrer le diagnostic pilote</span>
+                  <span>Démarrer le diagnostic</span>
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
-                <Link
-                  href="/login"
+                <a
+                  href="#methodologie"
                   className="inline-flex items-center justify-center px-5 py-3 text-sm font-semibold rounded-xl bg-white border border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-400 transition"
                 >
-                  <span>Accéder à l'Espace Coopérative</span>
-                </Link>
+                  <span>Découvrir notre méthodologie</span>
+                </a>
               </div>
-
             </div>
 
             {/* Right Column: Symbolic 3-Step Transformation Pipeline */}
-            <div className="lg:col-span-5 flex flex-col justify-center lg:pl-8">
+            <div className="lg:col-span-5 flex flex-col justify-center lg:pl-6">
               <div className="relative pl-14 sm:pl-16 space-y-7 before:absolute before:left-6 before:top-6 before:bottom-6 before:w-0.5 before:bg-slate-200">
-                
-                {/* Step 1: Diagnostic */}
                 <div className="relative flex items-start group">
                   <div className="absolute -left-14 sm:-left-16 h-12 w-12 rounded-2xl bg-white border-2 border-slate-300 text-slate-700 shadow-xs flex items-center justify-center flex-shrink-0 z-10 transition-colors group-hover:border-[#0F4C3A] group-hover:text-[#0F4C3A]">
                     <BarChart3 className="h-5 w-5" />
                   </div>
                   <div className="pt-0.5">
                     <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Étape 01
+                      Étape 01 • Diagnostic
                     </div>
                     <div className="text-base font-bold text-slate-900 mt-0.5">
-                      Diagnostic Multidimensionnel
+                      Diagnostic Multidimensionnel & Profilage
                     </div>
                     <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                      Identification du secteur ODCO, puis évaluation de 4 dimensions de maturité à travers 20 questions notées de 0 à 4.
+                      Positionnement selon le secteur ODCO, les 5 critères technico-fonctionnels (P1–P5) et les 20 indicateurs de maturité notés de 0 à 4.
                     </p>
                   </div>
                 </div>
 
-                {/* Step 2: Clusterisation */}
                 <div className="relative flex items-start group">
                   <div className="absolute -left-14 sm:-left-16 h-12 w-12 rounded-2xl bg-white border-2 border-slate-300 text-slate-700 shadow-xs flex items-center justify-center flex-shrink-0 z-10 transition-colors group-hover:border-[#0F4C3A] group-hover:text-[#0F4C3A]">
                     <Layers className="h-5 w-5" />
                   </div>
                   <div className="pt-0.5">
                     <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Étape 02
+                      Étape 02 • Activation
                     </div>
                     <div className="text-base font-bold text-slate-900 mt-0.5">
-                      Clusterisation Technico-Fonctionnelle
+                      7 Modules & 4 Logiques d&apos;Activation
                     </div>
                     <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                      Attribution du profil le plus compatible parmi 6 clusters : type de process, énergie, digitalisation, complexité et contraintes normatives.
+                      Sélection personnalisée des livrables selon le socle transversal, le secteur ODCO, la technologie utilisée et le niveau de maturité.
                     </p>
                   </div>
                 </div>
 
-                {/* Step 3: Prescription */}
                 <div className="relative flex items-start group">
                   <div className="absolute -left-14 sm:-left-16 h-12 w-12 rounded-2xl bg-[#0F4C3A] border-2 border-[#0F4C3A] text-white shadow-sm flex items-center justify-center flex-shrink-0 z-10">
                     <CheckCircle2 className="h-5 w-5" />
                   </div>
                   <div className="pt-0.5">
                     <div className="text-[11px] font-bold uppercase tracking-wider text-[#0F4C3A]">
-                      Étape 03 • Action
+                      Étape 03 • Suivi & Impact
                     </div>
                     <div className="text-base font-bold text-slate-900 mt-0.5">
-                      Prescription Sur-Mesure
+                      Ressources, Preuves & Indicateurs (KPI, KVI, KWI)
                     </div>
                     <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                      Feuille de route activant les modules transversaux, sectoriels, technologiques et par niveau de maturité.
+                      Vérification des livrables avec preuves documentaires, partage d&apos;outils pratiques et mesure continue de la valeur créée.
                     </p>
                   </div>
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* Section 1: Notre Approche (Slide 1 & 3) */}
-      <section id="approche" className="py-20 bg-slate-50/70 border-b border-slate-200 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Notre Approche
-            </h2>
-            <p className="mt-3 text-base text-slate-600 leading-relaxed">
-              Une articulation scientifique entre nomenclature institutionnelle sectorielle et matrice de maturité technico-fonctionnelle.
-            </p>
+      {/* =====================================================================
+          SECTION 1 : NOTRE APPROCHE (Texte officiel + Schéma + 3 Coopératives Pilotes)
+         ===================================================================== */}
+      <section id="approche" className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-6 space-y-4">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+                Notre approche
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Un accompagnement adapté aux réalités de chaque coopérative
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                Nous accompagnons les coopératives dans le renforcement de leurs capacités techniques, économiques et organisationnelles. Notre approche associe diagnostic de terrain, transfert de solutions, formation et suivi des effets obtenus, pour construire avec les membres des réponses adaptées à leurs activités et à leurs priorités.
+              </p>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                Chaque coopérative présente des besoins spécifiques selon son secteur, ses procédés de production, ses ressources et son niveau de maturité. Nous partons de ces réalités pour définir un parcours d’accompagnement progressif, fondé sur des outils concrets et sur leur appropriation par les personnes qui les utilisent au quotidien.
+              </p>
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                Notre modèle relie la performance de l’activité à la création de valeur et au bien-être des membres. Il vise à améliorer la gestion, la qualité des produits et l’accès aux marchés, tout en renforçant l’autonomie des coopératives et la durabilité de leurs pratiques.
+              </p>
+            </div>
+
+            <div className="lg:col-span-6">
+              <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <Image
+                  src="/images/modele_evolutif_hexagones.png"
+                  alt="Un Modèle Évolutif pour la Transformation Durable des Coopératives"
+                  width={900}
+                  height={500}
+                  className="w-full h-auto rounded-xl object-contain"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            
-            {/* Pillar 1: Cadre Sectoriel ODCO */}
-            <div className="p-7 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-              <div>
-                <div className="h-12 w-12 rounded-2xl bg-white border-2 border-slate-300 text-slate-700 shadow-xs flex items-center justify-center mb-5 transition-colors group-hover:border-[#0F4C3A] group-hover:text-[#0F4C3A]">
-                  <Layers className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Axe Horizontal • Macro-Niveau
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  Cadre Sectoriel ODCO
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Nomenclature officielle ODCO de 24 secteurs, déclinée en 237 sous-secteurs proposés pour la plateforme, afin d'intégrer les exigences réglementaires, sanitaires et de marché propres à chaque activité.
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500">
-                <span>Référentiel National</span>
-                <span className="text-[11px] font-normal text-slate-400">24 Secteurs · 237 Sous-secteurs</span>
-              </div>
+          {/* Encart : Une démarche éprouvée auprès de trois coopératives pilotes */}
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="max-w-3xl">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] block mb-1">
+                Expérimentation terrain
+              </span>
+              <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
+                Une démarche éprouvée auprès de trois coopératives pilotes
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                Le modèle a été mis en œuvre auprès de la{" "}
+                <strong className="font-semibold text-slate-900">
+                  coopérative agricole 3ème Millénaire
+                </strong>
+                , spécialisée dans la production de couscous sous la marque{" "}
+                <strong className="font-semibold text-[#0F4C3A]">Lammima</strong>, la{" "}
+                <strong className="font-semibold text-slate-900">
+                  coopérative Nahla Al Hamra
+                </strong>
+                , active dans l’apiculture, et la{" "}
+                <strong className="font-semibold text-slate-900">
+                  coopérative Ibdaat Rhamna
+                </strong>{" "}
+                active dans le textile. Ces expériences alimentent la conception d’un accompagnement reproductible et adaptable à d’autres coopératives.
+              </p>
             </div>
 
-            {/* Pillar 2: Matrice de Maturité 4D */}
-            <div className="p-7 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-              <div>
-                <div className="h-12 w-12 rounded-2xl bg-white border-2 border-slate-300 text-slate-700 shadow-xs flex items-center justify-center mb-5 transition-colors group-hover:border-[#0F4C3A] group-hover:text-[#0F4C3A]">
-                  <BarChart3 className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                  Axe Vertical • Micro-Niveau
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  Matrice de Maturité 4D
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Évaluation objective sur 20 indicateurs quantifiés mesurant la performance opérationnelle, économique, organisationnelle ainsi que la maturité technologique et énergétique.
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500">
-                <span>20 Indicateurs Calibrés</span>
-                <span className="text-[11px] font-normal text-slate-400">Échelle 0–4</span>
-              </div>
+            <div className="flex-shrink-0">
+              <a
+                href="#methodologie"
+                className="inline-flex items-center justify-center px-5 py-3 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white text-xs sm:text-sm font-bold transition shadow-sm whitespace-nowrap"
+              >
+                <span>Découvrir notre méthodologie</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
             </div>
-
-            {/* Pillar 3: Système de Modules Sur-Mesure */}
-            <div className="p-7 sm:p-8 rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
-              <div>
-                <div className="h-12 w-12 rounded-2xl bg-[#0F4C3A] border-2 border-[#0F4C3A] text-white shadow-sm flex items-center justify-center mb-5">
-                  <CheckCircle2 className="h-5 w-5" />
-                </div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-[#0F4C3A] mb-1.5">
-                  Moteur de Prescription • Action
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">
-                  Modules Sur-Mesure
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Activation dynamique de 4 familles de modules d'accompagnement (transversaux, sectoriels, technologiques et par palier) calibrés selon le profil réel de la coopérative.
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500">
-                <span>Feuilles de Route Ciblées</span>
-                <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded border border-slate-200/80">
-                  4 Familles de Modules
-                </span>
-              </div>
-            </div>
-
           </div>
         </div>
       </section>
 
-      {/* Section 2: Nos Domaines d'Accompagnement */}
-      <section id="domaines" className="py-10 sm:py-12 lg:py-14 bg-white border-b border-slate-200 scroll-mt-20">
+      {/* =====================================================================
+          SECTION 2 : SIX DOMAINES POUR AGIR (Textes officiels)
+         ===================================================================== */}
+      <section id="domaines" className="py-14 sm:py-18 bg-white border-b border-slate-200 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-7 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Nos Domaines d'Accompagnement
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+              Domaines d&apos;intervention
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Six domaines pour agir
             </h2>
-            <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Six leviers modulaires pour accélérer la montée en compétences et la transformation durable des coopératives.
+            <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Après le diagnostic initial (Module 01), six domaines modulaires structurent l’accompagnement technique, normatif, écologique, numérique et humain.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4.5">
-            {[
-              {
-                title: "Mise à niveau technique",
-                kicker: "Levier 01 • Procédés & Outils",
-                desc: "Optimisez vos processus de production, votre maintenance préventive et vos équipements pour fiabiliser la cadence et réduire les pertes matières.",
-                axis: "Axe Opérationnel",
-                tag: "Équipements & Procédés",
-                icon: Cpu,
-              },
-              {
-                title: "Certification et Conformité",
-                kicker: "Levier 02 • Normes & Agrément",
-                desc: "Transformez les normes réglementaires, sanitaires (ONSSA) et labels de qualité en leviers pérennes de conformité et d'accès aux marchés.",
-                axis: "Axe Réglementaire",
-                tag: "Sanitaire & ONSSA",
-                icon: ShieldCheck,
-              },
-              {
-                title: "Durabilité & Économie circulaire",
-                kicker: "Levier 03 • Écologie & Sobriété",
-                desc: "Accélérez la transition écologique par la valorisation des sous-produits organiques, l'efficacité énergétique et la sobriété hydrique.",
-                axis: "Axe Durable",
-                tag: "Économie Circulaire",
-                icon: Leaf,
-              },
-              {
-                title: "Digitalisation et visibilité",
-                kicker: "Levier 04 • Numérique & Marché",
-                desc: "Développez votre présence en ligne, digitalisez la traçabilité de vos lots et accédez aux circuits de distribution modernes et professionnels.",
-                axis: "Axe Numérique",
-                tag: "Traçabilité & Marché",
-                icon: BookOpen,
-              },
-              {
-                title: "Formation & Renforcement des Compétences",
-                kicker: "Levier 05 • Compétences & Gouvernance",
-                desc: "Renforcez les compétences managériales, techniques et financières des coopérateurs et adhérents pour consolider la gouvernance interne.",
-                axis: "Axe Organisationnel",
-                tag: "Gouvernance & Gestion",
-                icon: Users,
-              },
-              {
-                title: "Suivi & Étude d'impact",
-                kicker: "Levier 06 • Indicateurs & Retombées",
-                desc: "Mesurez vos indicateurs clés avec des données fiables, suivez la progression de maturité et démontrez les retombées socio-économiques locales.",
-                axis: "Axe Stratégique",
-                tag: "Indicateurs & Impact",
-                icon: CheckCircle2,
-              },
-            ].map((domain, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {SIX_DOMAINS.map((domain, i) => (
               <div
                 key={i}
-                className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
+                className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between group"
               >
                 <div>
-                  <div className="h-9 w-9 rounded-xl bg-white border-2 border-slate-300 text-slate-700 shadow-xs flex items-center justify-center mb-3 transition-colors group-hover:border-[#0F4C3A] group-hover:text-[#0F4C3A]">
-                    <domain.icon className="h-4.5 w-4.5" />
+                  <div className="h-10 w-10 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-[#0F4C3A] flex items-center justify-center mb-4">
+                    <domain.icon className="h-5 w-5" />
                   </div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                     {domain.kicker}
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 mb-1 group-hover:text-[#0F4C3A] transition-colors">
+                  <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-[#0F4C3A] transition-colors">
                     {domain.title}
                   </h3>
-                  <p className="text-xs text-slate-500 leading-normal">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                     {domain.desc}
                   </p>
                 </div>
-                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
                   <span>{domain.axis}</span>
                   <span className="text-[10px] font-normal text-slate-400">{domain.tag}</span>
                 </div>
@@ -413,19 +512,230 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Section 3: The 6 Clusters Typology */}
-      <section id="clusters" className="py-10 sm:py-12 lg:py-14 bg-slate-50/70 border-b border-slate-200 scroll-mt-20">
+      {/* =====================================================================
+          SECTION 3 : MÉTHODOLOGIE — DU DIAGNOSTIC À L'AUTONOMIE (6 étapes + 5 principes)
+         ===================================================================== */}
+      <section id="methodologie" className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+              Méthodologie
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Du diagnostic à l’autonomie
+            </h2>
+            <p className="mt-2.5 text-sm sm:text-base text-slate-600 leading-relaxed">
+              Notre méthodologie suit un parcours en six étapes. Elle permet de comprendre les besoins, de prioriser les actions, de déployer les solutions et d’en évaluer les effets avec les coopératives.
+            </p>
+          </div>
+
+          {/* Les 6 étapes */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {METHODOLOGY_STEPS.map((step) => (
+              <div
+                key={step.num}
+                className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="inline-flex items-center justify-center h-8 w-8 rounded-xl bg-[#0F4C3A] text-white text-xs font-extrabold">
+                      {step.num}
+                    </span>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      Étape {step.num}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900 mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Les 5 principes de notre intervention */}
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-8">
+            <div className="max-w-2xl">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+                Principes directeurs
+              </span>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">
+                Les principes de notre intervention
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {INTERVENTION_PRINCIPLES.map((p) => (
+                <div
+                  key={p.num}
+                  className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between"
+                >
+                  <div>
+                    <span className="text-xs font-extrabold text-[#0F4C3A] block mb-1">
+                      {p.num} · {p.title}
+                    </span>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      {p.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2">
+              <Image
+                src="/images/principes_accompagnement.png"
+                alt="Les 5 principes de l'accompagnement des coopératives"
+                width={1000}
+                height={520}
+                className="w-full max-w-4xl mx-auto h-auto rounded-xl object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          SECTION 4 : VALEURS — LES ENGAGEMENTS QUI ORIENTENT NOTRE ACCOMPAGNEMENT
+         ===================================================================== */}
+      <section id="valeurs" className="py-16 sm:py-20 bg-white border-b border-slate-200 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-7 sm:mb-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+              Valeurs
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Les engagements qui orientent notre accompagnement
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {VALUES_LIST.map((val) => {
+                const Icon = val.icon;
+                return (
+                  <div
+                    key={val.title}
+                    className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex items-start space-x-3.5"
+                  >
+                    <div className="h-9 w-9 rounded-xl bg-white border border-slate-200 text-[#0F4C3A] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-2xs">
+                      <Icon className="h-4.5 w-4.5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-slate-900">
+                        {val.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                        {val.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="lg:col-span-5">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+                <Image
+                  src="/images/valeurs_accompagnement.png"
+                  alt="Les valeurs de notre accompagnement"
+                  width={700}
+                  height={950}
+                  className="w-full h-auto rounded-xl object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          SECTION 5 : NOUS DÉCOUVRIR (Équipe UM6P / GTI)
+         ===================================================================== */}
+      <section id="equipe" className="py-16 sm:py-20 bg-slate-50/70 border-b border-slate-200 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+              Nous découvrir
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Une équipe au service de la transformation des coopératives
+            </h2>
+            <p className="mt-2.5 text-sm sm:text-base text-slate-600 leading-relaxed">
+              Notre équipe travaille avec les coopératives pour transformer les besoins identifiés sur le terrain en actions concrètes et en outils utilisables au quotidien.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Sabah BELIL */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-2xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-100">
+                <Image
+                  src="/images/sabah_belil.jpeg"
+                  alt="Dr. Sabah BELIL"
+                  width={220}
+                  height={280}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-center sm:text-left">
+                <h3 className="text-lg font-extrabold text-slate-900">
+                  Sabah BELIL
+                </h3>
+                <p className="text-xs font-bold text-[#0F4C3A] mt-0.5">
+                  Project &amp; Development Manager — Université Mohammed VI Polytechnique
+                </p>
+                <p className="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+                  Sabah Belil est docteur spécialisée dans les supply chain durables et les systèmes complexes. Elle pilote des initiatives associant ingénierie, durabilité et autonomisation des communautés. Elle met son expertise scientifique au service du terrain pour développer des chaînes de valeur inclusives, résilientes et circulaires, alliant progrès technologique et impact social.
+                </p>
+              </div>
+            </div>
+
+            {/* Ahmed CHEBAK */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
+              <div className="w-28 h-36 sm:w-32 sm:h-40 rounded-2xl overflow-hidden border border-slate-200 flex-shrink-0 bg-slate-100">
+                <Image
+                  src="/images/ahmed_chebak.png"
+                  alt="Pr. Ahmed CHEBAK"
+                  width={220}
+                  height={280}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-center sm:text-left">
+                <h3 className="text-lg font-extrabold text-slate-900">
+                  Ahmed CHEBAK
+                </h3>
+                <p className="text-xs font-bold text-[#0F4C3A] mt-0.5">
+                  Directeur Green Tech Institute — Université Mohammed VI Polytechnique
+                </p>
+                <p className="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
+                  Ahmed CHEBAK est professeur de génie électrique à l’Université Mohammed VI Polytechnique (UM6P) et directeur du Green Tech Institute (GTI). Il intervient dans le cadre de cette démarche de transfert technologique dédiée au renforcement des capacités des coopératives.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          SECTION 6 : LA TYPOLOGIE DES 6 CLUSTERS
+         ===================================================================== */}
+      <section id="clusters" className="py-12 sm:py-16 bg-white border-b border-slate-200 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-8">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               La Typologie des 6 Clusters
             </h2>
             <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Six profils définis par le type de process, l'intensité énergétique, la digitalisation, la complexité et les contraintes normatives.
+              Six profils définis par le type de processus (35 %), l&apos;intensité énergétique (15 %), la digitalisation (20 %), la complexité (15 %) et les contraintes normatives (15 %).
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               {
                 num: "01",
@@ -437,21 +747,21 @@ export default function HomePage() {
               {
                 num: "02",
                 name: "Transformation légère",
-                process: "Manuel + mécanique léger",
+                process: "Manuel + mécanique légère",
                 energy: "Faible à moyenne",
                 desc: "Digitalisation faible, complexité moyenne, contraintes ONSSA / sanitaires.",
               },
               {
                 num: "03",
                 name: "Production mécanisée",
-                process: "Mécanique dominant",
+                process: "Mécanique dominante",
                 energy: "Moyenne",
                 desc: "Digitalisation moyenne, process structuré, contraintes techniques et de sécurité.",
               },
               {
                 num: "04",
                 name: "Industriel / extractif",
-                process: "Mécanique lourd / thermique",
+                process: "Mécanique lourde / thermique",
                 energy: "Élevée",
                 desc: "Digitalisation moyenne, complexité élevée, contraintes strictes (sécurité, environnement).",
               },
@@ -460,7 +770,7 @@ export default function HomePage() {
                 name: "Services organisés",
                 process: "Organisationnel (non productif)",
                 energy: "Faible",
-                desc: "Digitalisation variable, complexité gestionnelle, contraintes contractuelles et de qualité.",
+                desc: "Digitalisation moyenne, complexité gestionnelle, contraintes contractuelles et de qualité.",
               },
               {
                 num: "06",
@@ -472,14 +782,14 @@ export default function HomePage() {
             ].map((cluster, i) => (
               <div
                 key={i}
-                className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:border-slate-300 hover:shadow-sm transition-all duration-200 flex flex-col justify-between group"
+                className="p-5 rounded-2xl bg-slate-50/60 border border-slate-200/90 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between group"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2.5">
+                  <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                       Cluster {cluster.num}
                     </span>
-                    <span className="text-[10px] font-medium text-slate-400 group-hover:text-slate-600 transition-colors">
+                    <span className="text-[10px] font-medium text-slate-500">
                       {cluster.process}
                     </span>
                   </div>
@@ -490,7 +800,7 @@ export default function HomePage() {
                     {cluster.desc}
                   </p>
                 </div>
-                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                <div className="mt-3 pt-2.5 border-t border-slate-200/70 flex items-center justify-between text-[11px] font-semibold text-slate-500">
                   <span className="text-[10px] font-normal text-slate-400">Intensité énergétique</span>
                   <span className="text-[10px] font-medium text-slate-600">{cluster.energy}</span>
                 </div>
@@ -500,15 +810,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Section 4: Partenaires Institutionnels - défilement de gauche à droite */}
-      <section id="partenaires" className="py-10 sm:py-12 lg:py-14 bg-white border-b border-slate-200 scroll-mt-20 overflow-hidden">
+      {/* =====================================================================
+          SECTION 7 : PARTENAIRES INSTITUTIONNELS
+         ===================================================================== */}
+      <section id="partenaires" className="py-10 sm:py-14 bg-slate-50/50 border-b border-slate-200 scroll-mt-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-7 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Nos Partenaires
             </h2>
             <p className="mt-1.5 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Une initiative conjointe pour catalyser le développement durable de l'économie sociale et solidaire.
+              Une initiative conjointe pour catalyser le développement durable de l&apos;économie sociale et solidaire.
             </p>
           </div>
         </div>
@@ -517,7 +829,6 @@ export default function HomePage() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-36 bg-gradient-to-r from-white via-white/80 to-transparent z-10" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-36 bg-gradient-to-l from-white via-white/80 to-transparent z-10" />
 
-          {/* Deux moitiés identiques : translateX(-50%) -> 0 boucle sans saccade. La seconde est masquée aux lecteurs d'écran. */}
           <div className="flex w-max animate-slide-ltr select-none">
             {[0, 1].map((half) => (
               <ul key={half} className="flex gap-5 pr-5" aria-hidden={half === 1 ? true : undefined}>
@@ -537,7 +848,6 @@ export default function HomePage() {
                             className={`${partner.logoClass} transition-transform group-hover:scale-105 duration-200`}
                           />
                         ) : (
-                          // Logo officiel en attente : affichage textuel neutre plutôt qu'un logo reconstitué
                           <span className="text-lg font-extrabold tracking-tight text-slate-800">
                             {partner.wordmark}
                           </span>
@@ -575,7 +885,7 @@ export default function HomePage() {
           </div>
           <div className="text-center md:text-right text-xs text-emerald-100/70 leading-relaxed">
             <p>Plateforme TTSFR • Un Modèle Évolutif pour la Transformation Durable des Coopératives</p>
-            <p className="mt-1">© 2026 Université Mohammed VI Polytechnique (UM6P) & Green Tech Institute (GTI). Tous droits réservés.</p>
+            <p className="mt-1">© 2026 Université Mohammed VI Polytechnique (UM6P) &amp; Green Tech Institute (GTI). Tous droits réservés.</p>
           </div>
         </div>
       </footer>

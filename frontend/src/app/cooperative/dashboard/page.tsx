@@ -1,14 +1,37 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Save, CheckCircle2 } from "lucide-react";
+import {
+  ArrowRight,
+  Save,
+  CheckCircle2,
+  FileText,
+  Download,
+  Filter,
+  Layers,
+  BarChart3,
+  ClipboardCheck,
+  ExternalLink,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
 import { Cluster, Cooperative, DiagnosticSubmission } from "@/lib/types";
 import { CoopSection } from "@/components/cooperative-shell";
 import { useCooperative } from "../layout";
+import {
+  TTSFR_MODULES,
+  TTSFR_DELIVERABLES,
+  TTSFR_IMPACT_INDICATORS,
+  ACTIVATION_BADGES,
+  CHECKLIST_ANSWER_RULES,
+  ChecklistAnswer,
+  ChecklistItemEntry,
+  ImpactIndicatorEntry,
+  getMaturityTierFromScore,
+  computeModuleGlobalStatus,
+} from "@/lib/ttsfr-modules-data";
 
 const CLUSTER_NAMES: Record<string, string> = {
   SERVICES_COGNITIFS: "Services cognitifs et numériques",
@@ -19,10 +42,17 @@ const CLUSTER_NAMES: Record<string, string> = {
   ARTISANAL_TRADITIONNEL: "Artisanal traditionnel",
 };
 
+const CHECKLIST_OPTIONS: ChecklistAnswer[] = [
+  "Non",
+  "Partiellement",
+  "Oui sans preuve",
+  "Oui avec preuve",
+  "Non applicable",
+];
+
 function DashboardSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-      {/* Top Header Card Skeleton */}
       <div className="bg-white rounded-2xl border border-slate-200/90 px-6 py-5 sm:px-8 sm:py-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-2.5">
           <div className="h-4 w-36 bg-slate-200 rounded-md" />
@@ -32,7 +62,6 @@ function DashboardSkeleton() {
         <div className="h-10 w-48 bg-slate-200 rounded-xl" />
       </div>
 
-      {/* Main Grid Skeleton */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-7 space-y-4">
@@ -76,6 +105,17 @@ function CooperativeDashboardContent() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileSavedMsg, setProfileSavedMsg] = useState(false);
+
+  // Accompagnement state: 7 modules, 99 deliverables checklist, 18 impact indicators
+  const [accompSubTab, setAccompSubTab] = useState<"livrables" | "impact">("livrables");
+  const [selectedModuleId, setSelectedModuleId] = useState<string>("M02");
+  const [selectedActivationFilter, setSelectedActivationFilter] = useState<string>("ALL");
+  const [selectedFamilyFilter, setSelectedFamilyFilter] = useState<string>("ALL");
+  const [selectedImpactType, setSelectedImpactType] = useState<"ALL" | "KPI" | "KVI" | "KWI">("ALL");
+  const [checklistEntries, setChecklistEntries] = useState<Record<string, ChecklistItemEntry>>({});
+  const [impactEntries, setImpactEntries] = useState<Record<string, ImpactIndicatorEntry>>({});
+  const [isSavingAccomp, setIsSavingAccomp] = useState(false);
+  const saveAccompTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [editForm, setEditForm] = useState({
     member_count: 1,
@@ -131,11 +171,134 @@ function CooperativeDashboardContent() {
       ]);
       setClusters(clusterList);
       setLatestDiag(diag);
+
+      if (diag?.answers) {
+        const savedChecklist = (diag.answers.checklist_entries || {}) as Record<
+          string,
+          ChecklistItemEntry
+        >;
+        // If diagnostic is SUBMITTED and M01 deliverables L001..L003 aren't answered yet,
+        // pre-populate L001..L003 as "Oui avec preuve" since Module 01 (Diagnostic) is completed on the platform
+        if (diag.status === "SUBMITTED") {
+          for (const lid of ["L001", "L002", "L003"]) {
+            if (!savedChecklist[lid]?.answer) {
+              savedChecklist[lid] = {
+                answer: "Oui avec preuve",
+                proof: "Généré et validé automatiquement sur la plateforme TTSFR",
+              };
+            }
+          }
+        }
+        setChecklistEntries(savedChecklist);
+
+        if (diag.answers.impact_entries) {
+          setImpactEntries(
+            diag.answers.impact_entries as Record<string, ImpactIndicatorEntry>
+          );
+        }
+      }
     } catch {
       // Handled silently
     } finally {
       setIsDataLoading(false);
     }
+  };
+
+  const persistAccompagnement = useCallback(
+    (
+      nextChecklist: Record<string, ChecklistItemEntry>,
+      nextImpact: Record<string, ImpactIndicatorEntry>
+    ) => {
+      if (saveAccompTimerRef.current) {
+        clearTimeout(saveAccompTimerRef.current);
+      }
+      saveAccompTimerRef.current = setTimeout(async () => {
+        try {
+          setIsSavingAccomp(true);
+          await api.post("/diagnostics/my-accompagnement", {
+            checklist_entries: nextChecklist,
+            impact_entries: nextImpact,
+          });
+        } catch {
+          // Ignore transient save errors
+        } finally {
+          setIsSavingAccomp(false);
+        }
+      }, 600);
+    },
+    []
+  );
+
+  const handleUpdateChecklistItem = (
+    livrableId: string,
+    patch: Partial<ChecklistItemEntry>
+  ) => {
+    setChecklistEntries((prev) => {
+      const current = prev[livrableId] || { answer: "" };
+      const updated = {
+        ...prev,
+        [livrableId]: { ...current, ...patch },
+      };
+      persistAccompagnement(updated, impactEntries);
+      return updated;
+    });
+  };
+
+  const handleUpdateImpactItem = (
+    indicatorId: string,
+    patch: Partial<ImpactIndicatorEntry>
+  ) => {
+    setImpactEntries((prev) => {
+      const current = prev[indicatorId] || {};
+      const updated = {
+        ...prev,
+        [indicatorId]: { ...current, ...patch },
+      };
+      persistAccompagnement(checklistEntries, updated);
+      return updated;
+    });
+  };
+
+  const handleExportImpactCSV = () => {
+    const headers = [
+      "ID",
+      "Type",
+      "Indicateur",
+      "Objectif",
+      "Methode d'evaluation",
+      "Cible",
+      "Valeur initiale",
+      "Valeur actuelle",
+      "Gain obtenu",
+      "Frequence",
+    ];
+    const rows = TTSFR_IMPACT_INDICATORS.map((ind) => {
+      const entry = impactEntries[ind.id] || {};
+      return [
+        `"${ind.id}"`,
+        `"${ind.type}"`,
+        `"${ind.name.replace(/"/g, '""')}"`,
+        `"${ind.objective.replace(/"/g, '""')}"`,
+        `"${ind.method.replace(/"/g, '""')}"`,
+        `"${ind.target.replace(/"/g, '""')}"`,
+        `"${(entry.initialValue || "").replace(/"/g, '""')}"`,
+        `"${(entry.currentValue || "").replace(/"/g, '""')}"`,
+        `"${(entry.gain || "").replace(/"/g, '""')}"`,
+        `"${ind.frequency}"`,
+      ].join(";");
+    });
+    const csvContent = "\uFEFF" + [headers.join(";"), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute(
+      "download",
+      `tracker_impact_kpi_kvi_kwi_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -213,56 +376,33 @@ function CooperativeDashboardContent() {
     },
   ];
 
+  const avgMaturityScore =
+    latestDiag?.score_global ??
+    (dimensionList.reduce((acc, d) => acc + d.val, 0) / 4 || 0);
+  const maturityTier = getMaturityTierFromScore(avgMaturityScore);
   const weakestDim = [...dimensionList].sort((a, b) => a.val - b.val)[0];
 
-  const officialModules = [
-    {
-      category: "1. Modules transversaux",
-      subtitle: "Socle commun à toutes les coopératives",
-      title: "Structuration et gouvernance",
-      items: [
-        "Clarification des rôles et responsabilités entre adhérentes",
-        "Organisation documentaire et tenue des registres statutaires",
-        "Suivi de la qualité et réduction des pertes matières",
-      ],
-    },
-    {
-      category: "2. Modules sectoriels (ODCO)",
-      subtitle: coopProfile?.sector?.name
-        ? `${coopProfile.sector.name}${coopProfile.sub_sector?.name ? ` · ${coopProfile.sub_sector.name}` : ""}`
-        : "Adaptés à votre filière d'activité",
-      title: "Conformité et valorisation filière",
-      items: [
-        "Accompagnement agrément sanitaire ONSSA et bonnes pratiques d'hygiène",
-        "Traçabilité des lots, étiquetage réglementaire et conditionnement",
-        "Valorisation commerciale terroir et accès aux circuits professionnels",
-      ],
-    },
-    {
-      category: "3. Modules technologiques",
-      subtitle: latestDiag?.answers?.p1
-        ? `Processus : ${String(latestDiag.answers.p1)}`
-        : "Adaptés à votre équipement",
-      title: "Équipements et sobriété énergétique",
-      items: [
-        "Standardisation des étapes de production et ergonomie des postes",
-        "Programme de maintenance préventive et entretien du matériel",
-        "Suivi des consommations d'eau et d'énergie et valorisation des sous-produits",
-      ],
-    },
-    {
-      category: "4. Modules par niveau de maturité",
-      subtitle: weakestDim
-        ? `Priorité : ${weakestDim.title} (${weakestDim.val.toFixed(0)} %)`
-        : "Progression par palier",
-      title: "Feuille de route de montée en maturité",
-      items: [
-        "Calcul structuré du coût de revient et suivi régulier de la trésorerie",
-        "Mise en place d'indicateurs simples de suivi de production et des ventes",
-        "Déploiement d'outils numériques de gestion, sauvegarde et visibilité",
-      ],
-    },
-  ];
+  // Filter deliverables for the selected module and active filters
+  const activeModuleObj =
+    TTSFR_MODULES.find((m) => m.id === selectedModuleId) || TTSFR_MODULES[1];
+
+  const moduleDeliverables = TTSFR_DELIVERABLES.filter((d) => {
+    if (d.moduleId !== selectedModuleId) return false;
+    if (
+      selectedActivationFilter !== "ALL" &&
+      !d.activations.includes(selectedActivationFilter)
+    ) {
+      return false;
+    }
+    if (selectedFamilyFilter !== "ALL" && d.family !== selectedFamilyFilter) {
+      return false;
+    }
+    return true;
+  });
+
+  const filteredImpactIndicators = TTSFR_IMPACT_INDICATORS.filter(
+    (ind) => selectedImpactType === "ALL" || ind.type === selectedImpactType
+  );
 
   if (isDataLoading) {
     return <DashboardSkeleton />;
@@ -319,7 +459,7 @@ function CooperativeDashboardContent() {
                       1. Maturité par dimension
                     </h2>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      Scores évalués sur 100 % à partir des 20 questions de maturité.
+                      Scores évalués sur 100 % à partir des 20 questions de maturité (formule : moyenne / 4 × 100).
                     </p>
                   </div>
 
@@ -371,7 +511,7 @@ function CooperativeDashboardContent() {
                       2. Compatibilité par profil
                     </h2>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      Comparaison de votre mode opératoire avec les 6 profils types.
+                      Comparaison de votre mode opératoire (P1 à P5) avec les 6 profils types.
                     </p>
                   </div>
 
@@ -462,66 +602,531 @@ function CooperativeDashboardContent() {
       )}
 
       {/* =====================================================================
-          SECTION 2 : PARCOURS D'ACCOMPAGNEMENT (Vue dédiée aux 4 modules TTSFR)
+          SECTION 2 : PARCOURS D'ACCOMPAGNEMENT PERSONNALISÉ
+          (7 Modules M01-M07 × 4 Logiques A1-A4 × 99 Livrables L001-L099 × Tracker KPI/KVI/KWI)
          ===================================================================== */}
       {activeSection === "accompagnement" && (
         <div className="space-y-6">
+          {/* En-tête officiel prescrit par le fichier Excel TTSFR */}
           <section className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-6 mb-6 border-b border-slate-100">
-              <div>
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 pb-6 border-b border-slate-100">
+              <div className="max-w-2xl">
+                <div className="flex items-center gap-2.5 mb-1.5">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+                    Prescription &amp; Suivi TTSFR
+                  </span>
+                  {isSavingAccomp && (
+                    <span className="inline-flex items-center text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                      Sauvegarde en cours...
+                    </span>
+                  )}
+                </div>
                 <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                  Parcours d&apos;accompagnement recommandé
+                  Votre parcours d’accompagnement personnalisé
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                  Feuille de route structurée selon les 4 familles de modules du modèle TTSFR.
+                <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+                  Ces recommandations ont été sélectionnées selon votre secteur, votre technologie, votre niveau de maturité et vos besoins transversaux.
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 bg-slate-50 px-5 py-3.5 rounded-2xl border border-slate-200/80 text-xs">
+              {/* Profil synthétique d'activation */}
+              <div className="flex flex-wrap items-center gap-4 bg-slate-50 px-5 py-3.5 rounded-2xl border border-slate-200/80 text-xs flex-shrink-0">
                 <div>
-                  <span className="text-slate-400 block">Cluster attribué</span>
-                  <strong className="font-bold text-slate-900">{clusterDisplayName}</strong>
+                  <span className="text-slate-400 block">Secteur ODCO</span>
+                  <strong className="font-bold text-slate-900">
+                    {coopProfile?.sector?.name || "Tous secteurs"}
+                  </strong>
                 </div>
                 <div className="h-7 w-px bg-slate-200 hidden sm:block" />
                 <div>
-                  <span className="text-slate-400 block">Axe prioritaire</span>
+                  <span className="text-slate-400 block">Technologie (P1)</span>
+                  <strong className="font-bold text-slate-900">
+                    {String(latestDiag?.answers?.p1 || "Standard")}
+                  </strong>
+                </div>
+                <div className="h-7 w-px bg-slate-200 hidden sm:block" />
+                <div>
+                  <span className="text-slate-400 block">Cluster &amp; Palier</span>
                   <strong className="font-bold text-[#0F4C3A]">
-                    {weakestDim ? `${weakestDim.title} (${weakestDim.val.toFixed(0)} %)` : "—"}
+                    {clusterDisplayName} ({maturityTier})
                   </strong>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {officialModules.map((mod) => (
-                <div
-                  key={mod.category}
-                  className="p-6 rounded-2xl border border-slate-200/90 bg-slate-50/40 flex flex-col justify-between"
+            {/* Les 4 badges de logiques d'activation (A1 à A4) */}
+            <div className="pt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold text-slate-500 mr-1 flex items-center">
+                  <Filter className="h-3.5 w-3.5 mr-1.5 text-slate-400" />
+                  Filtrer par logique d&apos;activation :
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedActivationFilter("ALL")}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                    selectedActivationFilter === "ALL"
+                      ? "bg-[#0F4C3A] text-white border-[#0F4C3A]"
+                      : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                  }`}
                 >
-                  <div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] block">
-                      {mod.category}
-                    </span>
-                    <h2 className="text-base font-bold text-slate-900 mt-1">
-                      {mod.title}
-                    </h2>
-                    <p className="text-xs text-slate-500 mt-0.5 mb-4">
-                      {mod.subtitle}
-                    </p>
+                  Toutes (A1–A4)
+                </button>
+                {Object.entries(ACTIVATION_BADGES).map(([code, badge]) => (
+                  <button
+                    key={code}
+                    type="button"
+                    onClick={() =>
+                      setSelectedActivationFilter(
+                        selectedActivationFilter === code ? "ALL" : code
+                      )
+                    }
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                      selectedActivationFilter === code
+                        ? "bg-[#0F4C3A] text-white border-[#0F4C3A]"
+                        : `${badge.colorClass} hover:opacity-90`
+                    }`}
+                  >
+                    {code} · {badge.label}
+                  </button>
+                ))}
+              </div>
 
-                    <ul className="space-y-2.5 text-xs text-slate-700 border-t border-slate-200/70 pt-4">
-                      {mod.items.map((line) => (
-                        <li key={line} className="flex items-start space-x-2.5">
-                          <span className="h-1.5 w-1.5 rounded-full bg-[#0F4C3A] mt-1.5 flex-shrink-0" />
-                          <span className="leading-relaxed">{line}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ))}
+              {/* Bascule Livrables vs Tracker KPI/KVI/KWI */}
+              <div className="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200/80 self-start sm:self-auto flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setAccompSubTab("livrables")}
+                  className={`inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
+                    accompSubTab === "livrables"
+                      ? "bg-white text-[#0F4C3A] shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" />
+                  Checklist des 7 Modules (99 livrables)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAccompSubTab("impact")}
+                  className={`inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-bold transition ${
+                    accompSubTab === "impact"
+                      ? "bg-white text-[#0F4C3A] shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  <BarChart3 className="h-3.5 w-3.5 mr-1.5" />
+                  Tracker KPI, KVI &amp; KWI (18)
+                </button>
+              </div>
             </div>
           </section>
+
+          {accompSubTab === "livrables" ? (
+            <>
+              {/* Grille des 7 Modules thématiques (M01 à M07) */}
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {TTSFR_MODULES.map((mod) => {
+                  const modItems = TTSFR_DELIVERABLES.filter(
+                    (d) => d.moduleId === mod.id
+                  );
+                  const modStatus = computeModuleGlobalStatus(
+                    modItems,
+                    checklistEntries
+                  );
+                  const answeredCount = modItems.filter(
+                    (d) => Boolean(checklistEntries[d.id]?.answer)
+                  ).length;
+                  const isSelected = selectedModuleId === mod.id;
+
+                  const statusBadgeStyle =
+                    modStatus.tone === "rose"
+                      ? "bg-rose-50 text-rose-700 border-rose-200"
+                      : modStatus.tone === "amber"
+                      ? "bg-amber-50 text-amber-800 border-amber-200"
+                      : modStatus.tone === "emerald"
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      : modStatus.tone === "blue"
+                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                      : "bg-slate-100 text-slate-600 border-slate-200";
+
+                  return (
+                    <button
+                      key={mod.id}
+                      type="button"
+                      onClick={() => setSelectedModuleId(mod.id)}
+                      className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between ${
+                        isSelected
+                          ? "bg-white border-[#0F4C3A] ring-2 ring-[#0F4C3A]/15 shadow-sm"
+                          : "bg-white border-slate-200/90 hover:border-slate-300 shadow-2xs"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0F4C3A]">
+                            {mod.id}
+                          </span>
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusBadgeStyle}`}
+                          >
+                            {modStatus.label}
+                          </span>
+                        </div>
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-1">
+                          {mod.name}
+                        </h3>
+                        <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                          {mod.objective}
+                        </p>
+                      </div>
+
+                      <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                        <span>
+                          {answeredCount}/{modItems.length} livrables évalués
+                        </span>
+                        {mod.id === "M01" && latestDiag?.status === "SUBMITTED" && (
+                          <span className="text-[10px] font-bold text-emerald-700">
+                            Déjà réalisé
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </section>
+
+              {/* Détail du Module sélectionné et Checklist de ses livrables */}
+              <section className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] block">
+                      {activeModuleObj.displayLabel}
+                    </span>
+                    <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5">
+                      {activeModuleObj.objective}
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Périmètre : {activeModuleObj.perimeter}
+                    </p>
+                  </div>
+
+                  {/* Filtre par famille de livrable (Descriptif, Normatif, Opérationnel, Stratégique) */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {["ALL", "Descriptif", "Normatif", "Opérationnel", "Stratégique"].map(
+                      (fam) => (
+                        <button
+                          key={fam}
+                          type="button"
+                          onClick={() => setSelectedFamilyFilter(fam)}
+                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                            selectedFamilyFilter === fam
+                              ? "bg-slate-900 text-white border-slate-900"
+                              : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                          }`}
+                        >
+                          {fam === "ALL" ? "Toutes familles" : fam}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {moduleDeliverables.length === 0 ? (
+                  <div className="py-12 text-center text-xs sm:text-sm text-slate-500">
+                    Aucun livrable ne correspond aux filtres sélectionnés dans ce module.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {moduleDeliverables.map((deliv) => {
+                      const entry = checklistEntries[deliv.id] || { answer: "" };
+                      const rule = entry.answer
+                        ? CHECKLIST_ANSWER_RULES[entry.answer]
+                        : null;
+
+                      const familyBadgeClass =
+                        deliv.family === "Descriptif"
+                          ? "bg-slate-100 text-slate-700 border-slate-200"
+                          : deliv.family === "Normatif"
+                          ? "bg-purple-50 text-purple-700 border-purple-200"
+                          : deliv.family === "Opérationnel"
+                          ? "bg-blue-50 text-blue-700 border-blue-200"
+                          : "bg-emerald-50 text-[#0F4C3A] border-emerald-200";
+
+                      return (
+                        <div
+                          key={deliv.id}
+                          className="p-5 rounded-2xl border border-slate-200/90 bg-slate-50/40 space-y-4 transition hover:border-slate-300"
+                        >
+                          {/* Ligne 1 : ID, Famille, Titre et Badges d'activation (A1..A4) */}
+                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                            <div className="space-y-1.5">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-xs font-extrabold text-slate-900 bg-white px-2.5 py-0.5 rounded-md border border-slate-200">
+                                  {deliv.id}
+                                </span>
+                                <span
+                                  className={`text-[11px] font-bold px-2.5 py-0.5 rounded-md border ${familyBadgeClass}`}
+                                >
+                                  {deliv.family}
+                                </span>
+                                <span className="text-[11px] text-slate-400 font-medium">
+                                  Palier cible : {deliv.maturityScope}
+                                </span>
+                              </div>
+                              <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                                {deliv.title}
+                              </h3>
+                            </div>
+
+                            {/* Badges d'activation */}
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {deliv.activations.map((actCode) => {
+                                const b = ACTIVATION_BADGES[actCode];
+                                if (!b) return null;
+                                return (
+                                  <span
+                                    key={actCode}
+                                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border ${b.colorClass}`}
+                                  >
+                                    {b.label}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Ligne 2 : Question de vérification & 5 boutons de réponse */}
+                          <div className="pt-2 border-t border-slate-200/70">
+                            <p className="text-xs font-medium text-slate-600 mb-2.5">
+                              {deliv.question}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              {CHECKLIST_OPTIONS.map((opt) => {
+                                const isSelected = entry.answer === opt;
+                                return (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() =>
+                                      handleUpdateChecklistItem(deliv.id, {
+                                        answer: isSelected ? "" : opt,
+                                      })
+                                    }
+                                    className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition ${
+                                      isSelected
+                                        ? "bg-[#0F4C3A] text-white border-[#0F4C3A] shadow-2xs"
+                                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                                    }`}
+                                  >
+                                    {opt}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Ligne 3 : Statut automatique, Recommandation, Ressource TTSFR et Preuve */}
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-3 border-t border-slate-200/70 items-center text-xs">
+                            <div className="lg:col-span-5 flex flex-wrap items-center gap-3">
+                              <div>
+                                <span className="text-[11px] text-slate-400 block">
+                                  Statut du livrable
+                                </span>
+                                <strong
+                                  className={`font-bold ${
+                                    rule?.tone === "rose"
+                                      ? "text-rose-700"
+                                      : rule?.tone === "amber"
+                                      ? "text-amber-700"
+                                      : rule?.tone === "emerald"
+                                      ? "text-emerald-700"
+                                      : rule?.tone === "blue"
+                                      ? "text-blue-700"
+                                      : "text-slate-500"
+                                  }`}
+                                >
+                                  {rule ? rule.status : "À renseigner"}
+                                </strong>
+                              </div>
+                              <div className="h-6 w-px bg-slate-200" />
+                              <div>
+                                <span className="text-[11px] text-slate-400 block">
+                                  Action recommandée
+                                </span>
+                                <strong className="font-semibold text-slate-800">
+                                  {rule ? rule.action : "Choisir une réponse"}
+                                </strong>
+                              </div>
+                            </div>
+
+                            <div className="lg:col-span-4">
+                              <input
+                                type="text"
+                                value={entry.proof || ""}
+                                onChange={(e) =>
+                                  handleUpdateChecklistItem(deliv.id, {
+                                    proof: e.target.value,
+                                  })
+                                }
+                                placeholder={`Preuve / commentaire (${deliv.expectedProof})...`}
+                                className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#0F4C3A]"
+                              />
+                            </div>
+
+                            <div className="lg:col-span-3 flex items-center justify-end">
+                              {entry.answer !== "Non applicable" && (
+                                <span className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold text-[11px]">
+                                  <FileText className="h-3.5 w-3.5 text-[#0F4C3A]" />
+                                  <span>
+                                    {rule ? rule.resourceState : "Modèle TTSFR"} ({deliv.resourceFormat})
+                                  </span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
+            </>
+          ) : (
+            /* =================================================================
+               SOUS-ONGLET 2 : TRACKER D'IMPACT (18 Indicateurs KPI, KVI et KWI)
+               ================================================================= */
+            <section className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+                <div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A] block">
+                    Module 07 — Suivi et étude d’impact
+                  </span>
+                  <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 mt-0.5">
+                    Tracker des indicateurs KPI, KVI et KWI
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Renseignez la valeur initiale, la valeur actuelle et le gain obtenu pour mesurer l&apos;impact opérationnel (KPI), la valeur créée (KVI) et le bien-être des membres (KWI).
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {(["ALL", "KPI", "KVI", "KWI"] as const).map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setSelectedImpactType(t)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition ${
+                        selectedImpactType === t
+                          ? "bg-[#0F4C3A] text-white border-[#0F4C3A]"
+                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                      }`}
+                    >
+                      {t === "ALL" ? "Tous (18)" : t}
+                    </button>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={handleExportImpactCSV}
+                    className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-2xs"
+                  >
+                    <Download className="h-3.5 w-3.5 mr-1.5" />
+                    Exporter Tracker (CSV)
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {filteredImpactIndicators.map((ind) => {
+                  const val = impactEntries[ind.id] || {};
+                  const badgeStyle =
+                    ind.type === "KPI"
+                      ? "bg-blue-50 text-blue-700 border-blue-200"
+                      : ind.type === "KVI"
+                      ? "bg-emerald-50 text-[#0F4C3A] border-emerald-200"
+                      : "bg-purple-50 text-purple-700 border-purple-200";
+
+                  return (
+                    <div
+                      key={ind.id}
+                      className="p-5 rounded-2xl border border-slate-200/90 bg-slate-50/40 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center"
+                    >
+                      <div className="lg:col-span-6 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border ${badgeStyle}`}
+                          >
+                            {ind.type}
+                          </span>
+                          <span className="text-xs font-semibold text-slate-500">
+                            {ind.objective}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-bold text-slate-900">
+                          {ind.name}
+                        </h3>
+                        <p className="text-[11px] text-slate-500">
+                          Formule : <span className="font-mono text-slate-700">{ind.method}</span> · Cible :{" "}
+                          <strong className="text-[#0F4C3A]">{ind.target}</strong> ({ind.frequency})
+                        </p>
+                      </div>
+
+                      <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-500 block mb-1">
+                            Valeur initiale
+                          </label>
+                          <input
+                            type="text"
+                            value={val.initialValue || ""}
+                            onChange={(e) =>
+                              handleUpdateImpactItem(ind.id, {
+                                initialValue: e.target.value,
+                              })
+                            }
+                            placeholder="Ex: 12 %"
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-[#0F4C3A]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-500 block mb-1">
+                            Valeur actuelle
+                          </label>
+                          <input
+                            type="text"
+                            value={val.currentValue || ""}
+                            onChange={(e) =>
+                              handleUpdateImpactItem(ind.id, {
+                                currentValue: e.target.value,
+                              })
+                            }
+                            placeholder="Ex: 19 %"
+                            className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:border-[#0F4C3A]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-500 block mb-1">
+                            Gain mesuré
+                          </label>
+                          <input
+                            type="text"
+                            value={val.gain || ""}
+                            onChange={(e) =>
+                              handleUpdateImpactItem(ind.id, {
+                                gain: e.target.value,
+                              })
+                            }
+                            placeholder="Ex: +7 pts"
+                            className="w-full px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50/40 font-bold text-[#0F4C3A] focus:outline-none focus:border-[#0F4C3A]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </div>
       )}
 

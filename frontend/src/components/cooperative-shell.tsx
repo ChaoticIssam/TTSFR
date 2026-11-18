@@ -48,7 +48,7 @@ const NAV_ITEMS: {
   {
     id: "accompagnement",
     label: "Parcours d'accompagnement",
-    subtitle: "Les 4 familles de modules",
+    subtitle: "7 modules & 99 livrables",
     href: "/cooperative/dashboard?section=accompagnement",
     icon: Compass,
   },
