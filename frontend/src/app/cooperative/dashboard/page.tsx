@@ -433,18 +433,31 @@ function CooperativeDashboardContent() {
             </div>
 
             <div className="flex items-center gap-3 flex-shrink-0">
-              <Link
-                href="/cooperative/diagnostic"
-                prefetch={false}
-                className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white font-semibold text-xs sm:text-sm transition whitespace-nowrap shadow-sm"
-              >
-                <span>
-                  {latestDiag?.status === "SUBMITTED"
-                    ? "Consulter ma synthèse diagnostic"
-                    : "Accéder au diagnostic"}
-                </span>
-                <ArrowRight className="h-4 w-4 ml-2 flex-shrink-0" />
-              </Link>
+              {latestDiag?.status === "SUBMITTED" ? (
+                <Link
+                  href="/cooperative/diagnostic"
+                  prefetch={false}
+                  className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#0F4C3A] hover:bg-[#135D43] text-white font-semibold text-xs sm:text-sm transition whitespace-nowrap shadow-sm"
+                >
+                  <span>Consulter ma synthèse diagnostic</span>
+                  <ArrowRight className="h-4 w-4 ml-2 flex-shrink-0" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveSection("profil");
+                    window.history.replaceState(
+                      null,
+                      "",
+                      "/cooperative/dashboard?section=profil"
+                    );
+                  }}
+                  className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition whitespace-nowrap"
+                >
+                  <span>Compléter mon profil</span>
+                </button>
+              )}
             </div>
           </section>
 
